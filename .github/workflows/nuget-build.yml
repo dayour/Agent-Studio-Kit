@@ -1,0 +1,73 @@
+name: Build NuGet Package
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'PowerCAT.PackageDeployer.Package/**'
+      - '.github/workflows/nuget-build.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'PowerCAT.PackageDeployer.Package/**'
+      - '.github/workflows/nuget-build.yml'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.x'
+    
+    - name: Restore dependencies
+      working-directory: ./PowerCAT.PackageDeployer.Package
+      run: dotnet restore
+    
+    - name: Build
+      working-directory: ./PowerCAT.PackageDeployer.Package
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Pack
+      working-directory: ./PowerCAT.PackageDeployer.Package
+      run: dotnet pack --configuration Release --no-build --output ./nupkg
+    
+    - name: Upload NuGet artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-package
+        path: PowerCAT.PackageDeployer.Package/nupkg/*.nupkg
+
+  publish:
+    needs: build
+    runs-on: windows-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.x'
+    
+    - name: Restore dependencies
+      working-directory: ./PowerCAT.PackageDeployer.Package
+      run: dotnet restore
+    
+    - name: Build
+      working-directory: ./PowerCAT.PackageDeployer.Package
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Pack
+      working-directory: ./PowerCAT.PackageDeployer.Package
+      run: dotnet pack --configuration Release --no-build --output ./nupkg
+    
+    # Uncomment to publish to NuGet.org
+    # - name: Publish to NuGet
+    #   working-directory: ./PowerCAT.PackageDeployer.Package
+    #   run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

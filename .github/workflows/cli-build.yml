@@ -1,0 +1,76 @@
+name: Build and Test CLI Package
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'agent-studio-cli/**'
+      - '.github/workflows/cli-build.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'agent-studio-cli/**'
+      - '.github/workflows/cli-build.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: agent-studio-cli/package-lock.json
+    
+    - name: Install dependencies
+      working-directory: ./agent-studio-cli
+      run: npm ci
+    
+    - name: Build
+      working-directory: ./agent-studio-cli
+      run: npm run build
+    
+    - name: Run tests
+      working-directory: ./agent-studio-cli
+      run: npm test
+    
+    - name: Run linter
+      working-directory: ./agent-studio-cli
+      run: npm run lint
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        registry-url: 'https://registry.npmjs.org'
+    
+    - name: Install dependencies
+      working-directory: ./agent-studio-cli
+      run: npm ci
+    
+    - name: Build
+      working-directory: ./agent-studio-cli
+      run: npm run build
+    
+    # Uncomment to publish to NPM
+    # - name: Publish to NPM
+    #   working-directory: ./agent-studio-cli
+    #   run: npm publish --access public
+    #   env:
+    #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

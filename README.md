@@ -12,6 +12,47 @@ This toolkit seamlessly integrates with the Microsoft Power Platform ecosystem t
 
 > **Note**: This is a fork of the Power CAT Copilot Studio Kit, enhanced with additional integration capabilities.
 
+## 📦 Available Packages
+
+Agent Studio Kit is now available as multiple packages for different development workflows:
+
+### NPM/NPX CLI Package
+Command-line interface for managing Power Platform environments and solutions.
+
+```bash
+# Using NPX (no installation required)
+npx @agent-studio/cli auth login
+npx @agent-studio/cli solution list
+
+# Or install globally
+npm install -g @agent-studio/cli
+agent-studio auth login
+agent-studio solution clone MySolution
+```
+
+**📖 [CLI Documentation](./agent-studio-cli/README.md)**
+
+### VSCode Extension
+Visual Studio Code extension for seamless Power Platform integration directly in your editor.
+
+**Features:**
+- Connect to Power Platform environments
+- Browse and manage solutions
+- Clone solutions to workspace
+- Export/import solutions
+- Integrated PAC CLI support
+
+**📖 [Extension Documentation](./agent-studio-vscode/README.md)**
+
+### NuGet Package
+.NET package deployer for automated solution deployment.
+
+```bash
+dotnet add package AgentStudioKit.PackageDeployer
+```
+
+**📖 [NuGet Documentation](./PowerCAT.PackageDeployer.Package/README.md)**
+
 <img width="1879" height="1136" alt="new_landing_page" src="https://github.com/user-attachments/assets/e0dbbb47-d92b-489e-b517-a0b9cc336b81" />
 
 # Features
