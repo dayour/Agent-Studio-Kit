@@ -1,0 +1,58 @@
+# Node modules and package artifacts
+node_modules/
+**/node_modules/
+package-lock.json
+**/package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+**/dist/
+out/
+**/out/
+build/
+**/build/
+
+# VSCode extension
+*.vsix
+.vscode-test/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+nupkg/
+**/nupkg/
+
+# .NET
+bin/
+obj/
+**/bin/
+**/obj/
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
