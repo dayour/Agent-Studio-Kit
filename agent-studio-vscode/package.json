@@ -1,0 +1,217 @@
+{
+  "name": "agent-studio-vscode",
+  "displayName": "Agent Studio Kit",
+  "description": "VSCode extension for Agent Studio Kit - Manage Copilot Studio agents and Power Platform solutions",
+  "version": "1.0.0",
+  "publisher": "agent-studio",
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Extension Packs"
+  ],
+  "keywords": [
+    "copilot-studio",
+    "power-platform",
+    "dataverse",
+    "agent-studio",
+    "pac-cli"
+  ],
+  "activationEvents": [
+    "onCommand:agent-studio.connect",
+    "onView:agentStudioEnvironments",
+    "onView:agentStudioSolutions"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "agent-studio.connect",
+        "title": "Connect to Environment",
+        "category": "Agent Studio",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "agent-studio.disconnect",
+        "title": "Disconnect from Environment",
+        "category": "Agent Studio",
+        "icon": "$(debug-disconnect)"
+      },
+      {
+        "command": "agent-studio.refreshEnvironments",
+        "title": "Refresh Environments",
+        "category": "Agent Studio",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "agent-studio.refreshSolutions",
+        "title": "Refresh Solutions",
+        "category": "Agent Studio",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "agent-studio.cloneSolution",
+        "title": "Clone Solution",
+        "category": "Agent Studio",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "agent-studio.exportSolution",
+        "title": "Export Solution",
+        "category": "Agent Studio",
+        "icon": "$(export)"
+      },
+      {
+        "command": "agent-studio.importSolution",
+        "title": "Import Solution",
+        "category": "Agent Studio",
+        "icon": "$(import)"
+      },
+      {
+        "command": "agent-studio.showOutput",
+        "title": "Show Output",
+        "category": "Agent Studio"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "agent-studio",
+          "title": "Agent Studio Kit",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "agent-studio": [
+        {
+          "id": "agentStudioEnvironments",
+          "name": "Environments",
+          "icon": "media/icon.svg",
+          "contextualTitle": "Agent Studio Environments"
+        },
+        {
+          "id": "agentStudioSolutions",
+          "name": "Solutions",
+          "icon": "media/icon.svg",
+          "contextualTitle": "Agent Studio Solutions"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "agent-studio.connect",
+          "when": "view == agentStudioEnvironments",
+          "group": "navigation"
+        },
+        {
+          "command": "agent-studio.refreshEnvironments",
+          "when": "view == agentStudioEnvironments",
+          "group": "navigation"
+        },
+        {
+          "command": "agent-studio.refreshSolutions",
+          "when": "view == agentStudioSolutions",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "agent-studio.cloneSolution",
+          "when": "view == agentStudioSolutions && viewItem == solution",
+          "group": "inline"
+        },
+        {
+          "command": "agent-studio.exportSolution",
+          "when": "view == agentStudioSolutions && viewItem == solution",
+          "group": "1_solution@1"
+        },
+        {
+          "command": "agent-studio.cloneSolution",
+          "when": "view == agentStudioSolutions && viewItem == solution",
+          "group": "1_solution@2"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "agent-studio.connect",
+          "when": "true"
+        },
+        {
+          "command": "agent-studio.disconnect",
+          "when": "agent-studio.connected"
+        },
+        {
+          "command": "agent-studio.cloneSolution",
+          "when": "agent-studio.connected"
+        },
+        {
+          "command": "agent-studio.exportSolution",
+          "when": "agent-studio.connected"
+        },
+        {
+          "command": "agent-studio.importSolution",
+          "when": "agent-studio.connected"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Agent Studio Kit",
+      "properties": {
+        "agentStudio.defaultEnvironment": {
+          "type": "string",
+          "default": "",
+          "description": "Default Power Platform environment URL"
+        },
+        "agentStudio.pacCliPath": {
+          "type": "string",
+          "default": "pac",
+          "description": "Path to PAC CLI executable"
+        },
+        "agentStudio.autoRefresh": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically refresh environments and solutions on connect"
+        },
+        "agentStudio.showNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notifications for operations"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^22.10.5",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.18.0",
+    "typescript": "^5.7.3",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^3.2.2"
+  },
+  "dependencies": {
+    "@agent-studio/cli": "file:../agent-studio-cli"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dayour/Agent-Studio-Kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dayour/Agent-Studio-Kit/issues"
+  },
+  "license": "MIT"
+}
