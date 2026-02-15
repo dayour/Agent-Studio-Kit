@@ -1,10 +1,48 @@
-# Power CAT Copilot Studio Kit
+# Agent Studio Kit
 
-The **Power CAT Copilot Studio Kit** is a comprehensive set of capabilities designed to augment [Microsoft Copilot Studio](https://aka.ms/CopilotStudio). The kit helps makers develop, govern, and test custom agents, use a large language model to validate AI-generated content, optimize prompts, and track aggregated key performance indicators of their custom agents.
+The **Agent Studio Kit** is a comprehensive set of capabilities designed to augment [Microsoft Copilot Studio](https://aka.ms/CopilotStudio). The kit helps makers develop, govern, and test custom agents, use a large language model to validate AI-generated content, optimize prompts, and track aggregated key performance indicators of their custom agents.
+
+This toolkit seamlessly integrates with the Microsoft Power Platform ecosystem through the **PAC CLI** (Power Platform CLI) for deployment automation and **Dataverse MCP** (Model Context Protocol) for advanced data operations and agent management.
+
+**Microsoft Copilot Studio Integration**: Agent Studio Kit extends Copilot Studio with enterprise-grade testing, governance, and analytics capabilities. It integrates natively with:
+- **Copilot Studio APIs**: Direct integration for agent configuration and conversation transcripts
+- **Bot Framework**: Leverages the underlying Bot Framework for advanced testing scenarios
+- **Direct Line API**: Enables automated testing and conversation analysis
+- **Power Virtual Agents**: Backward compatible with PVA-based agents
+
+> **Note**: This is a fork of the Power CAT Copilot Studio Kit, enhanced with additional integration capabilities.
 
 <img width="1879" height="1136" alt="new_landing_page" src="https://github.com/user-attachments/assets/e0dbbb47-d92b-489e-b517-a0b9cc336b81" />
 
 # Features
+
+## Power Platform Integration
+Agent Studio Kit integrates deeply with the Microsoft Power Platform ecosystem:
+
+### PAC CLI (Power Platform CLI)
+The kit leverages the Power Platform CLI for:
+- **Solution Management**: Export, import, and deploy solutions across environments
+- **Connector Operations**: Manage custom connectors and connection references
+- **Environment Management**: Configure and manage Power Platform environments
+- **CI/CD Integration**: Automate deployments through Power Platform Pipelines
+
+```bash
+# Example PAC CLI commands
+pac auth create --url https://yourorg.crm.dynamics.com
+pac solution export --name AgentStudioKit --path ./solution.zip
+pac solution import --path ./solution.zip --activate
+```
+
+### Dataverse MCP (Model Context Protocol)
+Dataverse MCP provides a standardized interface for:
+- **Agent Configuration Management**: Centralized storage and retrieval of agent settings
+- **Test Data Operations**: Batch operations on test runs, results, and configurations
+- **Compliance Tracking**: Query and manage compliance cases and audit data
+- **KPI Analytics**: Access aggregated conversation metrics and performance data
+- **Cross-Environment Sync**: Synchronize configurations between development, test, and production
+
+The Model Context Protocol ensures consistent data operations across all Agent Studio Kit components, making it easier to build automation and integrations.
+
 ## Testing capabilities  
 Copilot Studio Kit allows makers to configure agents, tests and test sets, and use them to batch test their custom agents. Test runs produce detailed results including latencies, observed responses and run level aggregates. Different test types include response match, attachment match, topic match, multi-turn and generative answers which leverages AI Builder for response analysis. 
 
@@ -110,12 +148,16 @@ Stay up to date with our releases by **subscribing** to them:
 
 # About this GitHub repo
 
-The Power CAT Copilot Studio Kit GitHub Repo contains the source, releases, issues and backlog items of all components that are part of the Power CAT Copilot Studio Kit.
+The Agent Studio Kit GitHub repository contains the source, releases, issues and backlog items of all components that are part of the Agent Studio Kit. This fork builds upon the Power CAT Copilot Studio Kit with enhanced integration capabilities for PAC CLI and Dataverse MCP.
+
+## GitHub Pages
+
+Visit our [GitHub Pages site](https://dayour.github.io/Agent-Studio-Kit/) for an interactive overview of the toolkit and its capabilities.
 
 ## Submit a feature request
 
 Let us know by filing an issue. 
-Before submitting your issue please search the [issues](https://github.com/microsoft/Powercat-Copilotstudio-Accelerator/issues) to ensure your issue has not already been reported
+Before submitting your issue please search the [issues](https://github.com/dayour/Agent-Studio-Kit/issues) to ensure your issue has not already been reported
 
 If your bug or feature request has already been reported, join the conversation by commenting and adding your reaction. Please use reactions to vote and not "+1" comments.
 - 👍: upvote
