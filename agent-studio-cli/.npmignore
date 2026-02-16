@@ -1,0 +1,12 @@
+src/
+tests/
+*.test.ts
+*.spec.ts
+tsconfig.json
+.eslintrc.js
+jest.config.js
+node_modules/
+.git/
+.github/
+.vscode/
+*.log

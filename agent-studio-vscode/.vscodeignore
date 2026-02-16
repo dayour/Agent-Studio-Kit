@@ -1,0 +1,6 @@
+src/
+.vscode/
+.gitignore
+.vscodeignore
+tsconfig.json
+*.md

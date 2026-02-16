@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>AgentStudioKit.PackageDeployer</id>
+    <version>1.0.0</version>
+    <title>Agent Studio Kit Package Deployer</title>
+    <authors>Agent Studio Kit Contributors</authors>
+    <owners>Microsoft</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/dayour/Agent-Studio-Kit</projectUrl>
+    <description>Agent Studio Kit Package Deployer - Deploy and manage Agent Studio Kit solutions for Microsoft Copilot Studio and Power Platform. Includes testing framework, compliance management, analytics, and governance features.</description>
+    <summary>Package deployer for Agent Studio Kit - comprehensive toolkit for Microsoft Copilot Studio</summary>
+    <releaseNotes>
+      v1.0.0
+      - Initial release
+      - Automated solution deployment
+      - PAC CLI integration support
+      - Dataverse MCP integration
+      - Configuration management
+    </releaseNotes>
+    <copyright>Copyright © 2023-2026</copyright>
+    <tags>copilot-studio power-platform dataverse pac-cli agent-studio package-deployer microsoft dynamics</tags>
+    <repository type="git" url="https://github.com/dayour/Agent-Studio-Kit.git" />
+    <readme>README.md</readme>
+    <dependencies>
+      <group targetFramework="net472">
+        <dependency id="Microsoft.PowerApps.MSBuild.PDPackage" version="1.0.0" />
+        <dependency id="Microsoft.CrmSdk.XrmTooling.CoreAssembly" version="9.1.1.65" />
+        <dependency id="Microsoft.CrmSdk.XrmTooling.PackageDeployment" version="9.1.0.184" />
+        <dependency id="System.Text.Json" version="9.0.4" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\net472\**\*.*" target="lib\net472" />
+    <file src="README.md" target="" />
+    <file src="..\LICENSE.txt" target="" />
+  </files>
+</package>
