@@ -116,7 +116,10 @@ export class PacCli {
    * Clone solution
    */
   async cloneSolution(name: string, outputPath: string): Promise<void> {
-    await execa('pac', ['solution', 'clone', '--name', name, '--outputDirectory', outputPath], { 
+    // Sanitize inputs to prevent command injection via argument values
+    const safeName = name.replace(/[;&|`$]/g, '');
+    const safePath = outputPath.replace(/[;&|`$]/g, '');
+    await execa('pac', ['solution', 'clone', '--name', safeName, '--outputDirectory', safePath], { 
       stdio: 'inherit' 
     });
   }
