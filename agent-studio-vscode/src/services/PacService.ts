@@ -23,7 +23,10 @@ export class PacService {
 
     async authenticate(url: string, name: string): Promise<void> {
         this.outputService.log(`Authenticating to ${url}...`);
-        const command = `pac auth create --url "${url}" --name "${name}"`;
+        // Sanitize inputs to prevent shell injection
+        const safeUrl = url.replace(/[;&|`$"\\]/g, '');
+        const safeName = name.replace(/[;&|`$"\\]/g, '');
+        const command = `pac auth create --url "${safeUrl}" --name "${safeName}"`;
         
         try {
             const { stdout, stderr } = await execAsync(command);
@@ -95,7 +98,9 @@ export class PacService {
 
     async cloneSolution(name: string, outputPath: string): Promise<void> {
         this.outputService.log(`Cloning solution ${name}...`);
-        const command = `pac solution clone --name "${name}" --outputDirectory "${outputPath}"`;
+        const safeName = name.replace(/[;&|`$"\\]/g, '');
+        const safePath = outputPath.replace(/[;&|`$"\\]/g, '');
+        const command = `pac solution clone --name "${safeName}" --outputDirectory "${safePath}"`;
         
         try {
             const { stdout, stderr } = await execAsync(command, { maxBuffer: 10 * 1024 * 1024 });
@@ -111,8 +116,10 @@ export class PacService {
 
     async exportSolution(name: string, outputPath: string, managed = false): Promise<void> {
         this.outputService.log(`Exporting solution ${name}...`);
+        const safeName = name.replace(/[;&|`$"\\]/g, '');
+        const safePath = outputPath.replace(/[;&|`$"\\]/g, '');
         const managedFlag = managed ? '--managed true' : '';
-        const command = `pac solution export --name "${name}" --path "${outputPath}" ${managedFlag}`;
+        const command = `pac solution export --name "${safeName}" --path "${safePath}" ${managedFlag}`;
         
         try {
             const { stdout, stderr } = await execAsync(command, { maxBuffer: 10 * 1024 * 1024 });
@@ -128,7 +135,8 @@ export class PacService {
 
     async importSolution(path: string): Promise<void> {
         this.outputService.log(`Importing solution from ${path}...`);
-        const command = `pac solution import --path "${path}" --activate-plugins`;
+        const safePath = path.replace(/[;&|`$"\\]/g, '');
+        const command = `pac solution import --path "${safePath}" --activate-plugins`;
         
         try {
             const { stdout, stderr } = await execAsync(command, { maxBuffer: 10 * 1024 * 1024 });
