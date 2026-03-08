@@ -25,14 +25,22 @@ The Power CAT Copilot Studio Kit is built using Power Platform and requires adeq
 
 ## Optional requirements
 
-- **AI Builder credits**.
-  AI Builder prompts are used with the Test Automation and Prompt Advisor features of the Kit.
+- **AI Builder / Copilot credits**.
+  AI Builder prompts are used with the *Test Automation*, *Rubric Refinement*, *Conversation Analyzer* and *Prompt Advisor* features of the Kit. These features have Power Automate flows using AI Builder capabilities, which have specific requirements. 
 
-  **Test Automation**: AI builder can be used to analyze an AI-generated answer and compare it with a sample answer or validation instructions. Each Test Case of type "Generative Answers" will consume 50 credits on average (based on our testing), but the exact consumption can vary based on the length of the test utterance, response and other factors.
+AI Builder capabilities consume Copilot Credits (and first AI Builder credits if any).
+
+  **Test Automation**: AI builder can be used to analyze an AI-generated answer and compare it with a sample answer or validation instructions. Each Test Case of type "Generative Answers" will consume 50 credits on average (based on our testing), but the exact consumption can vary based on the use of rubric, length of the test utterance, response and other factors.
 
   **Prompt Advisor**: each iteration will consume 120 credits on average (based on our testing), but can vary based on the length of the prompt being analyzed and other factors.
 
+  **Rubric Refinement**: Rubric Refinement runs and the actual refinement use AI Builder custom prompts, and consume credits.
+
+  **Conversation Analyzer**: The analysis process uses AI Builder custom prompts, and consumes varying amount of credits.
+
   Learn more about AI Builder prompts licensing [here](https://learn.microsoft.com/ai-builder/credit-management#ai-prompt-licensing).
+
+  Read more about licensing and credits from [here](https://learn.microsoft.com/ai-builder/administer-licensing)
 
 - **Azure Application Insights**.<br>
   This integration is required to get additional telemetry details for AI-generated answers. <br>
