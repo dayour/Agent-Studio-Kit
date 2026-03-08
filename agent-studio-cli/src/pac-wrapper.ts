@@ -1,4 +1,4 @@
-import { execa } from 'execa';
+import execa = require('execa');
 import chalk from 'chalk';
 
 export interface PacAuthProfile {
@@ -53,7 +53,7 @@ export class PacCli {
         if (line.includes('https://')) {
           const parts = line.trim().split(/\s+/);
           const isActive = line.includes('*');
-          const url = parts.find(p => p.startsWith('https://'));
+          const url = parts.find((p: string) => p.startsWith('https://'));
           const name = parts[0].replace('*', '').trim();
           
           if (url) {
