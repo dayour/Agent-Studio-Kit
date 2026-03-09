@@ -4,6 +4,9 @@ interface ConfigStore {
   defaultEnvironment?: string;
   lastUsedProfile?: string;
   recentSolutions?: string[];
+  anthropicApiKey?: string;
+  llmProxyUrl?: string;
+  defaultModel?: string;
 }
 
 export const config = new Conf<ConfigStore>({
@@ -38,4 +41,28 @@ export function addRecentSolution(solutionName: string): void {
 
 export function getRecentSolutions(): string[] {
   return config.get('recentSolutions') || [];
+}
+
+export function setAnthropicApiKey(key: string): void {
+  config.set('anthropicApiKey', key);
+}
+
+export function getAnthropicApiKey(): string | undefined {
+  return config.get('anthropicApiKey');
+}
+
+export function setLlmProxyUrl(url: string): void {
+  config.set('llmProxyUrl', url);
+}
+
+export function getLlmProxyUrl(): string | undefined {
+  return config.get('llmProxyUrl');
+}
+
+export function setDefaultModel(model: string): void {
+  config.set('defaultModel', model);
+}
+
+export function getDefaultModel(): string {
+  return config.get('defaultModel') || 'claude-sonnet-4-5-20250514';
 }

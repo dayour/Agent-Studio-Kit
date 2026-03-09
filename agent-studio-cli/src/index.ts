@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { envCommand } from './commands/env';
 import { solutionCommand } from './commands/solution';
 import { authCommand } from './commands/auth';
+import { specCommand } from './commands/spec';
 
 const program = new Command();
 
@@ -16,6 +17,7 @@ program
 program.addCommand(authCommand);
 program.addCommand(envCommand);
 program.addCommand(solutionCommand);
+program.addCommand(specCommand);
 
 // Parse arguments
 program.parse(process.argv);
