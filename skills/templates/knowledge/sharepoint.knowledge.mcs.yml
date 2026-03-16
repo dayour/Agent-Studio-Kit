@@ -1,0 +1,6 @@
+# Name: <Knowledge Source Name>
+# <What this knowledge source provides>
+kind: KnowledgeSourceConfiguration
+source:
+  kind: SharePointSearchSource
+  site: https://contoso.sharepoint.com/sites/MySite/Shared%20Documents/MyFolder

@@ -1,0 +1,3771 @@
+kind: ConnectorDefinition
+connectorId: /providers/Microsoft.PowerApps/apis/shared_sharepointonline
+version: 638979731498628100
+displayName: SharePoint
+description: SharePoint helps organizations share and collaborate with colleagues, partners, and customers. You can connect to SharePoint Online or to an on-premises SharePoint 2016 or 2019 farm using the On-Premises Data Gateway to manage documents and list items.
+connectorType: Public
+iconUri: https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/v1.0.1779/1.0.1779.4440/sharepointonline/icon.png
+changedTime: 2025-11-05T20:59:09.8628129Z
+hasPublicData: false
+isSSOSupported: true
+operations:
+  - displayName: Get all lists and libraries
+    description: Get all lists and libraries.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+    outputType:
+      kind: Record
+      properties:
+        value:
+          description: List of Tables
+          order: 0
+          type:
+            kind: Table
+            properties:
+              DisplayName:
+                description: The display name of the table.
+                order: 1
+                type: String
+
+              DynamicProperties:
+                description: Additional table properties provided by the connector to the clients.
+                order: 2
+                type: Any
+
+              Name:
+                description: The name of the table. The name is used at runtime.
+                order: 0
+                type: String
+
+    operationId: GetAllTables
+
+  - displayName: Approve hub site join request
+    description: Approve hub site join request. This will return an approval token that can be used to complete the join request using the join hub site action.
+    inputType:
+      properties:
+        dataset:
+          displayName: Hub Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        joiningSiteId:
+          displayName: Requesting Site Id
+          description: Id of the requesting site.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        ApprovalToken:
+          description: Approval Token
+          order: 0
+          type: String
+
+    operationId: ApproveHubSiteJoin
+
+  - displayName: Cancel hub site join request
+    description: Cancel hub join request. If applicable, you should specify the same Approval Correlation Id as used in the "Set hub site join status to pending" action.
+    inputType:
+      properties:
+        approvalCorrelationId:
+          displayName: Approval Correlation Id
+          description: Approval correlation identifier for this request.
+          visibility: Advanced
+          order: 1
+          type: String
+
+        dataset:
+          displayName: Requesting Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: String
+    operationId: CancelHubSiteJoinApproval
+
+  - displayName: Create sharing link for a file or folder
+    description: Create sharing link for a file or folder.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        expirationDateTime:
+          displayName: Link Expiration
+          description: The date after which the link will expire in yyyy-MM-dd format. Only applicable for anonymous links.
+          visibility: Advanced
+          order: 5
+          type: DateTime
+
+        id:
+          displayName: Item Id
+          description: Id of the file or folder item.
+          isRequired: true
+          order: 2
+          type: Number
+
+        scope:
+          displayName: Link Scope
+          description: Choose who your sharing link gives access to. "Anyone" option will only work if your administrator has enabled it.
+          isRequired: true
+          order: 4
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        type:
+          displayName: Link Type
+          description: The type of sharing link to create
+          isRequired: true
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        link:
+          description: Internal structure for sharing links
+          order: 0
+          type:
+            kind: Record
+            properties:
+              webUrl:
+                displayName: Sharing Link
+                description: A link to the item
+                order: 0
+                type: String
+
+    operationId: CreateSharingLink
+
+  - displayName: Copy file (deprecated)
+    description: Copies a file to a SharePoint site.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        destination:
+          displayName: Destination File Path
+          description: Path to the destination file.
+          isRequired: true
+          order: 2
+          type: String
+
+        overwrite:
+          displayName: Overwrite Flag
+          description: Whether or not to overwrite the destination file if it exists.
+          order: 3
+          type: Boolean
+
+        source:
+          displayName: Source File Path
+          description: Path to the source file.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 2
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 8
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 9
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 0
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 7
+          type: Boolean
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 4
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 6
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 1
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 3
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 5
+          type: Number
+
+    operationId: CopyFile
+
+  - displayName: Copy file
+    description: Copies a file. Works in a similar way to the "Copy to" command in SharePoint libraries. Returns information about the new file after copy.
+    inputType:
+      properties:
+        dataset:
+          displayName: Current Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        destinationDataset:
+          displayName: Destination Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 2
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        destinationFolderPath:
+          displayName: Destination Folder
+          description: Destination Folder
+          isRequired: true
+          order: 3
+          type: String
+
+        nameConflictBehavior:
+          displayName: If another file is already there
+          description: Pick one of the options available
+          isRequired: true
+          order: 4
+          dynamicValuesConfig:
+            capability: List
+
+          type: Number
+
+        sourceFileId:
+          displayName: File to Copy
+          description: File Identifier
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: CopyFileAsync
+
+  - displayName: Copy folder
+    description: Copies a folder. Works in a similar way to the "Copy to" command in SharePoint libraries. Returns information about the new folder after copy.
+    inputType:
+      properties:
+        dataset:
+          displayName: Current Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        destinationDataset:
+          displayName: Destination Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 2
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        destinationFolderPath:
+          displayName: Destination Folder
+          description: Destination Folder
+          isRequired: true
+          order: 3
+          type: String
+
+        nameConflictBehavior:
+          displayName: If another folder is already there
+          description: Pick one of the options available
+          isRequired: true
+          order: 4
+          dynamicValuesConfig:
+            capability: List
+
+          type: Number
+
+        sourceFolderId:
+          displayName: Folder to Copy
+          description: File Identifier
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: CopyFolderAsync
+
+  - displayName: Extract folder
+    description: "Extracts an archive file into a SharePoint folder (example: .zip)."
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        destination:
+          displayName: Destination Folder Path
+          description: Path to the destination folder.
+          isRequired: true
+          order: 2
+          type: String
+
+        overwrite:
+          displayName: Overwrite Flag
+          description: Whether or not to overwrite the destination file if it exists.
+          order: 3
+          type: Boolean
+
+        source:
+          displayName: Source File Path
+          description: Path to the source file.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Table
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 2
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 8
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 9
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 0
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 7
+          type: Boolean
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 4
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 6
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 1
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 3
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 5
+          type: Number
+
+    operationId: ExtractFolderV2
+
+  - displayName: Create file
+    description: Uploads a file to a SharePoint site. Make sure to pick an existing library.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        file:
+          displayName: File Content
+          description: Content of the file.
+          isRequired: true
+          order: 3
+          type: File
+
+        folderPath:
+          displayName: Folder Path
+          description: Must start with an existing library. Add folders if needed.
+          isRequired: true
+          order: 1
+          type: String
+
+        name:
+          displayName: File Name
+          description: Name of the file.
+          isRequired: true
+          order: 2
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: CreateFile
+
+  - displayName: Get file metadata
+    description: Gets information about the file such as size, etag, created date, etc. Uses a file identifier to pick the file. Use "Get file properties" action to get to the values stored in the columns in the library.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: File Identifier
+          description: Select a file.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: GetFileMetadata
+
+  - displayName: Update file
+    description: Updates the contents of the file specified by the file identifier.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        file:
+          displayName: File Content
+          description: Content of the file.
+          isRequired: true
+          order: 2
+          type: File
+
+        id:
+          displayName: File Identifier
+          description: Select a file.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 2
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 8
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 9
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 0
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 7
+          type: Boolean
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 4
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 6
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 1
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 3
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 5
+          type: Number
+
+    operationId: UpdateFile
+
+  - displayName: Delete file
+    description: Deletes the file specified by the file identifier.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        id:
+          displayName: File Identifier
+          description: Select a file.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType: String
+    operationId: DeleteFile
+
+  - displayName: Get file content
+    description: Gets file contents using the file identifier. The contents can be copied somewhere else, or be used as an attachment.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: File Identifier
+          description: Select a file.
+          isRequired: true
+          order: 1
+          type: String
+
+        inferContentType:
+          displayName: Infer Content Type
+          description: Infer content-type based on extension.
+          visibility: Advanced
+          order: 2
+          type: Boolean
+
+    outputType: File
+    operationId: GetFileContent
+
+  - displayName: List root folder
+    description: Returns files in the root SharePoint folder.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+    outputType:
+      kind: Table
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 2
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 8
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 9
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 0
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 7
+          type: Boolean
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 4
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 6
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 1
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 3
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 5
+          type: Number
+
+    operationId: ListRootFolder
+
+  - displayName: List folder
+    description: Returns files contained in a SharePoint folder.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: File Identifier
+          description: Unique identifier of the folder.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Table
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 2
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 8
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 9
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 0
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 7
+          type: Boolean
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 4
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 6
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 1
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 3
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 5
+          type: Number
+
+    operationId: ListFolder
+
+  - displayName: Get file metadata using path
+    description: Gets information about the file such as size, etag, created date, etc. Uses a file path to pick the file. Use "Get file properties" action to get to the values stored in the columns in the library.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        path:
+          displayName: File Path
+          description: Select a file.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: GetFileMetadataByPath
+
+  - displayName: Get file content using path
+    description: Gets file contents using the file path.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        inferContentType:
+          displayName: Infer Content Type
+          description: Infer content-type based on extension.
+          visibility: Advanced
+          order: 2
+          type: Boolean
+
+        path:
+          displayName: File Path
+          description: Select a file.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType: File
+    operationId: GetFileContentByPath
+
+  - displayName: Get folder metadata
+    description: Gets information about the folder. Uses a file identifier to pick the folder.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: File Identifier
+          description: Select a folder.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: GetFolderMetadata
+
+  - displayName: Get folder metadata using path
+    description: Gets information about the folder. Uses a folder path to pick the folder.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        path:
+          displayName: Folder Path
+          description: Select a folder.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: GetFolderMetadataByPath
+
+  - displayName: Send an HTTP request to SharePoint
+    description: Construct a SharePoint REST API to invoke. Note – This action may execute any SharePoint REST API you have access to. Please proceed with caution.
+    inputType:
+      properties:
+        body:
+          displayName: Body
+          description: Enter request content in JSON
+          order: 4
+          type: String
+
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        headers:
+          displayName: Headers
+          description: Enter JSON object of request headers
+          order: 3
+          type: Any
+
+        method:
+          displayName: Method
+          description: Http Method
+          isRequired: true
+          order: 1
+          enumValues:
+            - GET
+            - PUT
+            - POST
+            - PATCH
+            - DELETE
+          type: String
+
+        uri:
+          displayName: Uri
+          description: "Example: _api/web/lists/getbytitle('Documents')"
+          isRequired: true
+          order: 2
+          type: String
+
+    outputType: Any
+    operationId: HttpRequest
+
+  - displayName: Join hub site
+    description: Join the requested site to the hub site. An Approval Token is required to complete the join successfully if that hub requires approval. If applicable, you should specify the same Approval Correlation Id as used in the "Set hub site join status to pending" action.
+    inputType:
+      properties:
+        approvalCorrelationId:
+          displayName: Approval Correlation Id
+          description: Approval correlation identifier for this request.
+          visibility: Advanced
+          order: 3
+          type: String
+
+        approvalToken:
+          displayName: Approval Token
+          description: Approval token for this request.
+          visibility: Advanced
+          order: 2
+          type: String
+
+        dataset:
+          displayName: Requesting Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        hubSiteId:
+          displayName: Hub Site Id
+          description: Id of the hub site.
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType: String
+    operationId: JoinHubSite
+
+  - displayName: Move file
+    description: Moves a file. Works in a similar way to the "Move to" command in SharePoint libraries. Returns information about the new file after move.
+    inputType:
+      properties:
+        dataset:
+          displayName: Current Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        destinationDataset:
+          displayName: Destination Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 2
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        destinationFolderPath:
+          displayName: Destination Folder
+          description: Destination Folder
+          isRequired: true
+          order: 3
+          type: String
+
+        nameConflictBehavior:
+          displayName: If another file is already there
+          description: Pick one of the options available
+          isRequired: true
+          order: 4
+          dynamicValuesConfig:
+            capability: List
+
+          type: Number
+
+        sourceFileId:
+          displayName: File to Move
+          description: File Identifier
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: MoveFileAsync
+
+  - displayName: Move folder
+    description: Moves a folder. Works in a similar way to the "Move to" command in SharePoint libraries. Returns information about the new folder after move.
+    inputType:
+      properties:
+        dataset:
+          displayName: Current Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        destinationDataset:
+          displayName: Destination Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 2
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        destinationFolderPath:
+          displayName: Destination Folder
+          description: Destination Folder
+          isRequired: true
+          order: 3
+          type: String
+
+        nameConflictBehavior:
+          displayName: If another folder is already there
+          description: Pick one of the options available
+          isRequired: true
+          order: 4
+          dynamicValuesConfig:
+            capability: List
+
+          type: Number
+
+        sourceFolderId:
+          displayName: Folder to Move
+          description: File Identifier
+          isRequired: true
+          order: 1
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: MoveFolderAsync
+
+  - displayName: Set hub site join status to pending
+    description: Set the requested site's hub join request status to pending. The Approval Correlation Id is an optional parameter that helps SharePoint identify a particular hub join request. The requesting site can only have one pending request at a given time.
+    inputType:
+      properties:
+        approvalCorrelationId:
+          displayName: Approval Correlation Id
+          description: Approval correlation identifier for this request.
+          visibility: Advanced
+          order: 1
+          type: String
+
+        dataset:
+          displayName: Requesting Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+    outputType: String
+    operationId: NotifyHubSiteJoinApprovalStarted
+
+  - displayName: Get lists
+    description: Gets SharePoint lists from a site.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+    outputType:
+      kind: Record
+      properties:
+        value:
+          description: List of Tables
+          order: 0
+          type:
+            kind: Table
+            properties:
+              DisplayName:
+                description: The display name of the table.
+                order: 1
+                type: String
+
+              DynamicProperties:
+                description: Additional table properties provided by the connector to the clients.
+                order: 2
+                type: Any
+
+              Name:
+                description: The name of the table. The name is used at runtime.
+                order: 0
+                type: String
+
+    operationId: GetTables
+
+  - displayName: Create new document set
+    description: Creates a new document set list item.
+    inputType:
+      properties:
+        contentTypeId:
+          displayName: Content Type Id
+          description: "Example: 0x0120D520"
+          isRequired: true
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        DynamicProperties:
+          displayName: Parameters to this operation passed in the body
+          description: Parameters to this operation passed in the body.
+          order: 4
+          type: UnresolvedDynamicType
+
+        path:
+          displayName: Document Set Path
+          description: "Example: folder1/folder2/dsName"
+          isRequired: true
+          order: 2
+          type: String
+
+        table:
+          displayName: Library
+          description: SharePoint library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: CreateNewDocumentSet
+
+  - displayName: Create new folder
+    description: Creates a new folder or folder path.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        path:
+          displayName: Folder Path
+          description: "Example: folder1/folder2/folder3"
+          isRequired: true
+          order: 2
+          type: String
+
+        table:
+          displayName: List or Library
+          description: SharePoint list or library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view.
+          visibility: Advanced
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: CreateNewFolder
+
+  - displayName: Resolve person
+    description: Returns a single matching user value so it can be assigned to a column of type person. If there are no matches, or multiple matches, this action will error out.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        entityId:
+          displayName: Column
+          description: Pick the column you want to assign the value to.
+          isRequired: true
+          order: 2
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        searchValue:
+          displayName: Email or name
+          description: Use the email address, or the full name of the user.
+          isRequired: true
+          order: 3
+          type: String
+
+        table:
+          displayName: List or Library
+          description: Pick the list or library that the column is in.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view.
+          visibility: Advanced
+          order: 4
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        "@odata.type":
+          order: 6
+          type: String
+
+        Claims:
+          description: user claims
+          order: 0
+          type: String
+
+        Department:
+          description: user department
+          order: 4
+          type: String
+
+        DisplayName:
+          description: user title
+          order: 1
+          type: String
+
+        Email:
+          description: user email
+          order: 2
+          type: String
+
+        JobTitle:
+          description: user job title
+          order: 5
+          type: String
+
+        Picture:
+          description: user picture
+          order: 3
+          type: String
+
+    operationId: SearchForUser
+
+  - displayName: Get files (properties only)
+    description: |-
+      Gets the properties saved in the columns in the library for all folders and files stored in the library.
+                  You can also filter down to the items that match a condition. An "Apply to each" section is usually used to work with the output from this action.
+                  When using this with the On-Premises Data Gateway, the name of the library to connect to may need to be entered manually.
+    inputType:
+      properties:
+        $filter:
+          displayName: Filter Query
+          description: An ODATA filter query to restrict the entries returned (e.g. stringColumn eq 'string' OR numberColumn lt 123).
+          visibility: Advanced
+          order: 2
+          type: String
+
+        $orderby:
+          displayName: Order By
+          description: An ODATA orderBy query for specifying the order of entries.
+          visibility: Advanced
+          order: 3
+          type: String
+
+        $top:
+          displayName: Top Count
+          description: Total number of entries to retrieve (default = all).
+          visibility: Advanced
+          order: 4
+          type: Number
+
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        folderPath:
+          displayName: Limit Entries to Folder
+          description: Select a folder, or leave blank for the whole library
+          order: 5
+          type: String
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 7
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        viewScopeOption:
+          displayName: Include Nested Items
+          description: Return entries contained in sub-folders (default = true)
+          order: 6
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: GetFileItems
+
+  - displayName: Get items
+    description: Gets items from a SharePoint list.
+    inputType:
+      properties:
+        $filter:
+          displayName: Filter Query
+          description: An ODATA filter query to restrict the entries returned (e.g. stringColumn eq 'string' OR numberColumn lt 123).
+          visibility: Advanced
+          order: 2
+          type: String
+
+        $orderby:
+          displayName: Order By
+          description: An ODATA orderBy query for specifying the order of entries.
+          visibility: Advanced
+          order: 3
+          type: String
+
+        $top:
+          displayName: Top Count
+          description: Total number of entries to retrieve (default = all).
+          visibility: Advanced
+          order: 4
+          type: Number
+
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        folderPath:
+          displayName: Limit Entries to Folder
+          description: Select a folder, or leave blank for the whole list
+          order: 5
+          type: String
+
+        table:
+          displayName: List Name
+          description: SharePoint list name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 7
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        viewScopeOption:
+          displayName: Include Nested Items
+          description: Return entries contained in sub-folders (default = true)
+          order: 6
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: GetItems
+
+  - displayName: Create item
+    description: Creates a new item in a SharePoint list.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        item:
+          displayName: Item
+          description: Item to create
+          isRequired: true
+          order: 2
+          type: UnresolvedDynamicType
+
+        table:
+          displayName: List Name
+          description: SharePoint list name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: PostItem
+
+  - displayName: Get item
+    description: Gets a single item by its id from a SharePoint list.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: Id
+          description: Unique identifier of item to be retrieved
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: List Name
+          description: SharePoint list name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: GetItem
+
+  - displayName: Delete item
+    description: Deletes an item from a SharePoint list.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        id:
+          displayName: Id
+          description: Unique identifier of item to be deleted
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: List Name
+          description: SharePoint list name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: String
+    operationId: DeleteItem
+
+  - displayName: Update item
+    description: Updates an item in a SharePoint list.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: Id
+          description: Unique identifier of item to be updated
+          isRequired: true
+          order: 2
+          type: Number
+
+        item:
+          displayName: Item
+          description: Item with changed properties
+          isRequired: true
+          order: 3
+          type: UnresolvedDynamicType
+
+        table:
+          displayName: List Name
+          description: SharePoint list name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 4
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: PatchItem
+
+  - displayName: Create an approval request for an item or file
+    description: Creates an approval request for an item or file.
+    inputType:
+      properties:
+        approvalSchema:
+          displayName: Approval Schema
+          description: Schema for the selected approval type.
+          isRequired: true
+          order: 4
+          type: UnresolvedDynamicType
+
+        approvalType:
+          displayName: Approval Type
+          description: Select an approval type.
+          isRequired: true
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: Number
+
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        id:
+          displayName: Id
+          description: Id of the item the approval request is being created for.
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: List or Library
+          description: SharePoint list or library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        ApprovalId:
+          displayName: Approval Request ID
+          description: The ID of the approval request created
+          isRequired: true
+          order: 0
+          type: String
+
+    operationId: CreateApprovalRequest
+
+  - displayName: Get changes for an item or a file (properties only)
+    description: "Returns information about columns that have changed within a given time window. Note: The list must have Versioning turned on."
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: Id
+          description: Id of the item you want to fetch changes for.
+          isRequired: true
+          order: 2
+          type: Number
+
+        includeDrafts:
+          displayName: Include Minor Versions
+          description: Boolean for whether to consider changes from minor (draft) versions.
+          visibility: Advanced
+          order: 5
+          type: Boolean
+
+        since:
+          displayName: Since
+          description: "Trigger Window Start token or an item version label (ex: 3.0) or an ISO 8601 date (YYYY-MM-DDThh:mmZ)."
+          isRequired: true
+          order: 3
+          type: String
+
+        table:
+          displayName: List or Library Name
+          description: SharePoint list or library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        until:
+          displayName: Until
+          description: "Trigger Window End token or an item version label (ex: 3.0) or an ISO 8601 date (YYYY-MM-DDThh:mmZ). If blank, defaults to latest version."
+          order: 4
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Returns only columns defined in a view.
+          visibility: Advanced
+          order: 6
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: GetItemChanges
+
+  - displayName: Check if the scheduled version of the item is published
+    description: Returns the result in the output variable IsFilePublished.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        id:
+          displayName: Item ID
+          description: Unique identifier of the file.
+          isRequired: true
+          order: 2
+          type: Number
+
+        scheduledVersion:
+          displayName: Scheduled Version
+          description: Version of file that was scheduled for publish.
+          isRequired: true
+          order: 3
+          type: String
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        IsFilePublished:
+          description: A boolean value (true, false) to indicate whether the scheduled version of the file has been published
+          order: 0
+          type: Boolean
+
+    operationId: CheckIfFileIsPublished
+
+  - displayName: Check in file
+    description: Check in a checked out file in a document library, which makes the version of the document available to others.
+    inputType:
+      properties:
+        checkinType:
+          displayName: Check in type
+          description: Select the type of version you would like to check in
+          isRequired: true
+          order: 4
+          dynamicValuesConfig:
+            capability: List
+
+          type: Number
+
+        comment:
+          displayName: Comments
+          description: Type comments describing what has changed in this version
+          isRequired: true
+          order: 3
+          type: String
+
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: Id
+          description: Id of the list item the file is attached to.
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: String
+    operationId: CheckInFile
+
+  - displayName: Check out file
+    description: Check out a file in a document library to prevent others from editing the document, and your changes from being visible until the documented is checked in.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: Id
+          description: Id of the list item the file is attached to.
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: String
+    operationId: CheckOutFile
+
+  - displayName: Discard check out
+    description: If you check out a file and don’t make changes to it, or you make changes that you don’t want to keep, you can simply discard the checkout, rather than saving the file. If your organization tracks versions, a new version is created each time you check a file back into the library. By discarding the checkout, you can avoid making new versions when you haven’t made any changes to the file.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: Id
+          description: Id of the list item the file is attached to.
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: String
+    operationId: DiscardFileCheckOut
+
+  - displayName: Get file properties
+    description: |-
+      Gets the properties saved in the columns in the library for the item specified by the item id.
+                  You can add a "Get file content" step and use the "File identifier" property returned by this action to get to the contents of the file.
+                  When using this with the On-Premises Data Gateway, the name of the library to connect to may need to be entered manually.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: Id
+          description: Unique identifier of item to be retrieved
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: GetFileItem
+
+  - displayName: Grant access to an item or a folder
+    description: Grant access to an item or a folder in SharePoint to specific people.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        emailBody:
+          displayName: Message
+          description: A plain text formatted message that is included in the sharing invitation
+          order: 5
+          type: String
+
+        id:
+          displayName: Id
+          description: Unique identifier of the item or folder you want to grant access to.
+          isRequired: true
+          order: 2
+          type: Number
+
+        recipients:
+          displayName: Recipients
+          description: A collection of recipients who will receive the sharing invitation
+          isRequired: true
+          order: 3
+          type: String
+
+        roleValue:
+          displayName: Roles
+          description: Specify a role that is to be granted to the recipients
+          isRequired: true
+          order: 4
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        sendEmail:
+          displayName: Notify Recipients
+          description: Specify whether recipients should receive an email notification message
+          order: 6
+          type: Boolean
+
+        table:
+          displayName: List or Library Name
+          description: SharePoint list or library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: String
+    operationId: GrantAccess
+
+  - displayName: Update file properties
+    description: |-
+      Updates the properties stored in columns in a library for the item specified by the item id. Use "Update file" action to update file contents.
+                  When using this with the On-Premises Data Gateway, the name of the library to connect to may need to be entered manually.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: Id
+          description: Unique identifier of item to be updated
+          isRequired: true
+          order: 2
+          type: Number
+
+        item:
+          displayName: Item
+          description: Item with changed properties
+          isRequired: true
+          order: 3
+          type: UnresolvedDynamicType
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 4
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: PatchFileItem
+
+  - displayName: Update file properties using AI Builder model results
+    description: Updates the values stored in library columns for a file analyzed by the model specified by the ModelId.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: Id
+          description: Unique identifier of item to be updated.
+          isRequired: true
+          order: 2
+          type: Number
+
+        modelId:
+          displayName: ModelId
+          description: Enter modelId of the Model which is used for prediction
+          order: 3
+          type: String
+
+        predictResult:
+          displayName: PredictResult
+          description: Enter request content in JSON
+          order: 4
+          type: String
+
+        table:
+          displayName: Library Name
+          description: Library Name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    operationId: PatchFileItemWithPredictedValues
+
+  - displayName: Set content approval status
+    description: Sets the content approval status for an item in a list or library that has content approval turned on. You must provide an ETag for pages and files. You can get the ETag using the Get File Metadata action. This action is only available for SharePoint Online and SharePoint 2019.
+    inputType:
+      properties:
+        approvalAction:
+          displayName: Action
+          description: Pick the approval action.
+          isRequired: true
+          order: 3
+          enumValues:
+            - Submit
+            - Approve
+            - Reject
+          type: String
+
+        comments:
+          displayName: Comments
+          description: Add the comments from the approver.
+          order: 4
+          type: String
+
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        entityTag:
+          displayName: ETag
+          description: Add an ETag (required for files and pages).
+          order: 5
+          type: String
+
+        id:
+          displayName: Id
+          description: Id of the item you are setting the status of.
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        ApprovalLink:
+          description: A link to the item that needs approval
+          order: 1
+          type: String
+
+        ContentApprovalStatus:
+          description: The content approval status of the list item
+          order: 3
+          type: String
+
+        ETag:
+          description: ETag of the item after the approval status was set
+          order: 0
+          type: String
+
+        PublishStartDate:
+          description: Date time at which the item will be Published
+          order: 2
+          type: String
+
+        ScheduledVersion:
+          description: The version of the item that has been scheduled
+          order: 4
+          type: String
+
+    operationId: SetApprovalStatus
+
+  - displayName: Stop sharing an item or a file
+    description: Delete all links giving access to an item or a file and remove all people with direct access except for owners.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        id:
+          displayName: Id
+          description: Unique identifier of the item or file you want to stop sharing.
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: List or Library Name
+          description: SharePoint list or library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: String
+    operationId: UnshareItem
+
+  - displayName: Get attachments
+    description: Returns the list of attachments for the specified list item. You can add a "Get attachment content" step and use the "File identifier" property returned by this action to get to the contents of the file.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        itemId:
+          displayName: Id
+          description: Id of the list item to get attachments from.
+          isRequired: true
+          order: 2
+          type: String
+
+        table:
+          displayName: List Name
+          description: SharePoint list name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType:
+      kind: Table
+      properties:
+        AbsoluteUri:
+          description: Link to attachment
+          order: 1
+          type: String
+
+        DisplayName:
+          description: Name
+          order: 2
+          type: String
+
+        Id:
+          description: File identifier
+          order: 0
+          type: String
+
+    operationId: GetItemAttachments
+
+  - displayName: Add attachment
+    description: Adds a new attachment to the specified list item.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        displayName:
+          displayName: File Name
+          description: File name.
+          isRequired: true
+          order: 3
+          type: String
+
+        file:
+          displayName: File Content
+          description: Content of the file.
+          isRequired: true
+          order: 4
+          type: File
+
+        itemId:
+          displayName: Id
+          description: Id of the list item to attach the file to.
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: List Name
+          description: SharePoint list name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        AbsoluteUri:
+          description: Link to attachment
+          order: 1
+          type: String
+
+        DisplayName:
+          description: Name
+          order: 2
+          type: String
+
+        Id:
+          description: File identifier
+          order: 0
+          type: String
+
+    operationId: CreateAttachment
+
+  - displayName: Delete attachment
+    description: Deletes the specified attachment.
+    inputType:
+      properties:
+        attachmentId:
+          displayName: File Identifier
+          description: File identifier for the attachment.
+          isRequired: true
+          order: 3
+          type: String
+
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        itemId:
+          displayName: Id
+          description: Id of the list item the file is attached to.
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: List Name
+          description: SharePoint list name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: String
+    operationId: DeleteAttachment
+
+  - displayName: Get attachment content
+    description: Returns file contents using the file identifier. The contents can be copied somewhere else, or be used as an attachment.
+    inputType:
+      properties:
+        attachmentId:
+          displayName: File Identifier
+          description: File identifier for the attachment.
+          isRequired: true
+          order: 3
+          type: String
+
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        itemId:
+          displayName: Id
+          description: Id of the list item the file is attached to.
+          isRequired: true
+          order: 2
+          type: Number
+
+        table:
+          displayName: List Name
+          description: SharePoint list name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: File
+    operationId: GetAttachmentContent
+
+  - displayName: Generate document using Microsoft Syntex (preview)
+    description: "Use this action to create documents based on modern templates from Microsoft Syntex. This preview requires a Syntex license. Pricing is subject to change. For more info see: https://docs.microsoft.com/en-us/microsoft-365/contentunderstanding/content-assembly."
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        fileName:
+          displayName: File Name
+          description: Document file name.
+          order: 5
+          type: String
+
+        folderPath:
+          displayName: Folder Path
+          description: Must start with an existing library.
+          order: 4
+          type: String
+
+        item:
+          displayName: Placeholders
+          description: Document placeholder values.
+          isRequired: true
+          order: 3
+          type: UnresolvedDynamicType
+
+        table:
+          displayName: Document Library Name
+          description: SharePoint document library name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        template:
+          displayName: Document Template
+          description: Document template.
+          isRequired: true
+          order: 2
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: View (no effect)
+          description: This parameter does nothing. Please do not use.
+          visibility: Advanced
+          order: 6
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: CreateContentAssemblyDocument
+
+  - displayName: Get list views
+    description: Gets views from a SharePoint list.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+          aiSensitivity: High
+
+        table:
+          displayName: List Name
+          description: SharePoint list name.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType:
+      kind: Table
+      properties:
+        DisplayName:
+          description: The display name of the table.
+          order: 1
+          type: String
+
+        DynamicProperties:
+          description: Additional table properties provided by the connector to the clients.
+          order: 2
+          type: Any
+
+        Name:
+          description: The name of the table. The name is used at runtime.
+          order: 0
+          type: String
+
+    operationId: GetTableViews
+
+  - displayName: Agreements Solution - Generate document within Agreements Solution workspace
+    description: Use this action to create documents based on modern templates in a Agreements Solution workspace. This is behind a payment wall currently in planning (either license or PayG).
+    inputType:
+      properties:
+        dataset:
+          displayName: Agreements Solution Workspace
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        documentName:
+          displayName: File Name
+          description: Document file name.
+          order: 3
+          type: String
+
+        item:
+          displayName: Fields
+          description: Document placeholder values.
+          isRequired: true
+          order: 2
+          type: UnresolvedDynamicType
+
+        table:
+          displayName: Table (no effect)
+          description: This parameter does nothing. Please do not use.
+          visibility: Advanced
+          order: 4
+          type: String
+
+        template:
+          displayName: Agreements Solution Template
+          description: Agreements Solution template.
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: View (no effect)
+          description: This parameter does nothing. Please do not use.
+          visibility: Advanced
+          order: 5
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        DisplayName:
+          description: The display name of the file or folder.
+          order: 3
+          type: String
+
+        ETag:
+          description: The etag of the file or folder.
+          order: 9
+          type: String
+
+        FileLocator:
+          description: The filelocator of the file or folder.
+          order: 10
+          type: String
+
+        Id:
+          description: The unique id of the file or folder.
+          order: 1
+          type: String
+
+        IsFolder:
+          description: A boolean value (true, false) to indicate whether or not the blob is a folder.
+          order: 8
+          type: Boolean
+
+        ItemId:
+          description: The value that can be used to Get or Update file properties in libraries.
+          order: 0
+          type: Number
+
+        LastModified:
+          description: The date and time the file or folder was last modified.
+          order: 5
+          type: DateTime
+
+        MediaType:
+          description: The media type of the file or folder.
+          order: 7
+          type: String
+
+        Name:
+          description: The name of the file or folder.
+          order: 2
+          type: String
+
+        Path:
+          description: The path of the file or folder.
+          order: 4
+          type: String
+
+        Size:
+          description: The size of the file or folder.
+          order: 6
+          type: Number
+
+    operationId: CreateAgreementsSolutionDocument
+
+triggers:
+  - displayName: When an item or a file is modified
+    description: Triggers when an item is modified (but not when it is created).
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        folderPath:
+          displayName: Folder
+          description: Select a folder, or leave blank for the whole library
+          order: 2
+          type: String
+
+        table:
+          displayName: List or Library Name
+          description: SharePoint list name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    triggerId: GetOnChangedItems
+
+  - displayName: When a file is deleted
+    description: Triggers when a file is deleted in a library. You can optionally specify a folder to watch as well. When a folder is deleted, the trigger will fire only once for the deleted folder. This can only be used by site collection admins of the site where the list is located.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        folderPath:
+          displayName: Folder
+          description: Select a folder, or leave blank for the whole library
+          order: 2
+          type: String
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        value:
+          description: List of Deleted Items
+          order: 0
+          type:
+            kind: Table
+            properties:
+              DeletedByUserName:
+                displayName: Deleted by
+                description: The name of the user who deleted this item
+                order: 3
+                type: String
+
+              FileNameWithExtension:
+                displayName: Filename with extension
+                description: File name with extension of the item in document libraries, same as Name of the item in lists
+                order: 2
+                type: String
+
+              ID:
+                description: List item id
+                order: 0
+                type: Number
+
+              IsFolder:
+                displayName: Is folder
+                description: A true/false value to indicate if the item is a folder
+                order: 5
+                type: Boolean
+
+              Name:
+                description: File name of the item in document libraries, display name of the item in lists
+                order: 1
+                type: String
+
+              TimeDeleted:
+                displayName: Time deleted
+                description: When this item was deleted
+                order: 4
+                type: DateTime
+
+    triggerId: GetOnDeletedFileItems
+
+  - displayName: When an item is deleted
+    description: Triggers when an item is deleted in a list. This can only be used by site collection admins of the site where the list is located.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        table:
+          displayName: List Name
+          description: SharePoint list name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType:
+      kind: Record
+      properties:
+        value:
+          description: List of Deleted Items
+          order: 0
+          type:
+            kind: Table
+            properties:
+              DeletedByUserName:
+                displayName: Deleted by
+                description: The name of the user who deleted this item
+                order: 3
+                type: String
+
+              FileNameWithExtension:
+                displayName: Filename with extension
+                description: File name with extension of the item in document libraries, same as Name of the item in lists
+                order: 2
+                type: String
+
+              ID:
+                description: List item id
+                order: 0
+                type: Number
+
+              IsFolder:
+                displayName: Is folder
+                description: A true/false value to indicate if the item is a folder
+                order: 5
+                type: Boolean
+
+              Name:
+                description: File name of the item in document libraries, display name of the item in lists
+                order: 1
+                type: String
+
+              TimeDeleted:
+                displayName: Time deleted
+                description: When this item was deleted
+                order: 4
+                type: DateTime
+
+    triggerId: GetOnDeletedItems
+
+  - displayName: When a file is created (properties only)
+    description: |-
+      Triggers when an item is created in a library. Returns only the properties stored in the library columns.
+                  You can add a "Get file content" step and use the "File identifier" property returned by this action to get to the contents of the file.
+                  When using this with the On-Premises Data Gateway, the name of the library to connect to may need to be entered manually.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        folderPath:
+          displayName: Folder
+          description: Select a folder, or leave blank for the whole library
+          order: 2
+          type: String
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    triggerId: GetOnNewFileItems
+
+  - displayName: When an item is created
+    description: Triggers when an item is created.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        table:
+          displayName: List Name
+          description: SharePoint list name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 2
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    triggerId: GetOnNewItems
+
+  - displayName: When a file is classified by a Microsoft Syntex model
+    description: Triggers a flow when Microsoft Syntex changes the classification date of any file in the library. The date changes when a document processing model classifies or extracts information.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        folderPath:
+          displayName: Folder
+          description: Select a folder, or leave blank for the whole library
+          order: 2
+          type: String
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    triggerId: GetOnUpdatedFileClassifiedTimes
+
+  - displayName: When a file is created or modified (properties only)
+    description: |-
+      Triggers when an item is created, or modified in a library. Returns only the properties stored in the library columns.
+                  You can add a "Get file content" step and use the "File identifier" property returned by this action to get to the contents of the file.
+                  When using this with the On-Premises Data Gateway, the name of the library to connect to may need to be entered manually.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        folderPath:
+          displayName: Folder
+          description: Select a folder, or leave blank for the whole library
+          order: 2
+          type: String
+
+        table:
+          displayName: Library Name
+          description: SharePoint library name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 3
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    triggerId: GetOnUpdatedFileItems
+
+  - displayName: When an item is created or modified
+    description: Triggers when an item is created, and also each time it is modified.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename"
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        table:
+          displayName: List Name
+          description: SharePoint list name
+          isRequired: true
+          order: 1
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        view:
+          displayName: Limit Columns by View
+          description: Avoid column threshold issues by only using columns defined in a view
+          visibility: Advanced
+          order: 2
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+    outputType: UnresolvedDynamicType
+    triggerId: GetOnUpdatedItems
+
+  - displayName: When a file is created in a folder (deprecated)
+    description: Triggers when a file is created in a SharePoint folder. The trigger does not fire if a file is added/updated in a subfolder. If it is required to trigger on subfolders, multiple triggers should be created.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        folderId:
+          displayName: Folder Id
+          description: Select a folder.
+          isRequired: true
+          order: 1
+          type: String
+
+        inferContentType:
+          displayName: Infer Content Type
+          description: Infer content-type based on extension.
+          visibility: Advanced
+          order: 2
+          type: Boolean
+
+    outputType: File
+    triggerId: OnNewFile
+
+  - displayName: When a file is created or modified in a folder (deprecated)
+    description: Triggers when a file is created, and also each time it is modified in a SharePoint folder. The trigger does not fire if a file is added/updated in a subfolder. If it is required to trigger on subfolders, multiple triggers should be created.
+    inputType:
+      properties:
+        dataset:
+          displayName: Site Address
+          description: "Example: https://contoso.sharepoint.com/sites/sitename."
+          isRequired: true
+          order: 0
+          dynamicValuesConfig:
+            capability: List
+
+          type: String
+
+        folderId:
+          displayName: Folder Id
+          description: Select a folder.
+          isRequired: true
+          order: 1
+          type: String
+
+        inferContentType:
+          displayName: Infer Content Type
+          description: Infer content-type based on extension.
+          visibility: Advanced
+          order: 2
+          type: Boolean
+
+    outputType: File
+    triggerId: OnUpdatedFile

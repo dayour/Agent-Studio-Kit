@@ -1,0 +1,86 @@
+---
+user-invocable: false
+description: Guide users through adding a new connector action to a Copilot Studio agent. Connector actions require UI-based connection setup, so this skill walks users through the Copilot Studio portal steps, then delegates to edit-action for YAML modifications.
+argument-hint: <action description, e.g. "post a Teams message">
+allowed-tools: Bash(node *connector-lookup.bundle.js *), Read
+context: fork
+agent: author
+---
+
+# Add Connector Action (Guide)
+
+This skill guides users through adding a new connector action to their Copilot Studio agent. **It does NOT write action YAML directly** because connector actions require a connection reference that can only be created through the Copilot Studio UI.
+
+## Why This Is a Guide, Not a Generator
+
+Connector actions need:
+1. A **connection reference** — an authenticated link to the external service (Teams, Outlook, SharePoint, etc.)
+2. The connection reference can only be created by the user authenticating in the Copilot Studio portal
+3. Once the action is added via the UI and pulled locally, the YAML can be edited with `/copilot-studio:edit-action`
+
+## Connector Lookup
+
+Help the user find the right connector and operation before they go to the UI. Use the connector lookup tool:
+
+```bash
+node ${CLAUDE_SKILL_DIR}/../../scripts/connector-lookup.bundle.js list
+node ${CLAUDE_SKILL_DIR}/../../scripts/connector-lookup.bundle.js operations <connector>
+node ${CLAUDE_SKILL_DIR}/../../scripts/connector-lookup.bundle.js operation <connector> <operationId>
+node ${CLAUDE_SKILL_DIR}/../../scripts/connector-lookup.bundle.js search <keyword>
+```
+
+`<connector>` matches by API name (`shared_office365`) or partial display name (`outlook`).
+
+Use these to help the user understand:
+- Which connector has the operation they need
+- What the operation is called (so they can find it in the UI)
+- What inputs and outputs it expects
+
+## Instructions
+
+1. **Understand what the user wants** — ask clarifying questions if the request is vague (e.g., "send a message" — Teams? Outlook? Slack?)
+
+2. **Search for the operation** using connector-lookup:
+   ```bash
+   node ${CLAUDE_SKILL_DIR}/../../scripts/connector-lookup.bundle.js search "<user's description>"
+   ```
+   If no match, try broader terms. Show the user what's available.
+
+3. **Show the operation details** so the user knows exactly what to look for in the UI:
+   ```bash
+   node ${CLAUDE_SKILL_DIR}/../../scripts/connector-lookup.bundle.js operation <connector> <operationId>
+   ```
+
+4. **Walk the user through the UI steps**:
+
+   > Here's how to add this action in Copilot Studio:
+   >
+   > 1. Open [Copilot Studio](https://copilotstudio.microsoft.com)
+   > 2. Navigate to your agent
+   > 3. Go to **Actions** in the left sidebar
+   > 4. Click **+ Add an action**
+   > 5. Search for "**{operation displayName}**" from the **{connector displayName}** connector
+   > 6. Configure the connection (authenticate with your credentials)
+   > 7. Save the action
+   >
+   > Once saved, pull the updated agent files using the **Copilot Studio VS Code Extension** (Source Control → Pull).
+
+5. **After the user confirms they've pulled**, check for the new action file:
+   ```
+   Glob: **/actions/*.mcs.yml
+   ```
+   If the action file is present, let the user know it was pulled successfully.
+
+6. **Offer to edit the action** — if the user wants to customize inputs, descriptions, or connection mode:
+
+   > Would you like me to edit the action YAML? I can modify input descriptions, switch between automatic and manual inputs, change the connection mode, and more. Just say the word and I'll use `/copilot-studio:edit-action`.
+
+## Reference Catalog
+
+For curated examples of well-structured actions (Teams post message, Outlook create event), see:
+
+```
+Read: ${CLAUDE_SKILL_DIR}/catalog.md
+```
+
+These samples show best practices for how actions should be structured and can serve as reference when editing actions.

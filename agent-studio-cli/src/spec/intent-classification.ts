@@ -1,5 +1,5 @@
 import { LLMIntentResult } from './types';
-import { createChatCompletion } from './llm-client';
+import { createChatCompletion, getDefaultModel } from './llm-client';
 
 export function normalizeChannelName(channel?: string): string | undefined {
   if (!channel) return undefined;
@@ -41,7 +41,7 @@ function determineAgentType(channel?: string): 'CA' | 'DA' | undefined {
 export async function classifyIntentWithLLM(userInput: string, clarificationAttempt: number = 0): Promise<LLMIntentResult> {
   try {
     const response = await createChatCompletion({
-      model: 'claude-sonnet-4-5-20250514',
+      model: getDefaultModel(),
       max_tokens: 900,
       messages: [{
         role: 'user',

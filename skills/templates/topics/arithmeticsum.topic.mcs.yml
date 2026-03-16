@@ -1,0 +1,45 @@
+# Name: Arithmetic Sum Topic
+# Template: Topic demonstrating addition of two numbers with input and output variables
+# NOTE: Replace all _REPLACE IDs with unique random IDs before use
+kind: AdaptiveDialog
+inputs:
+  - kind: AutomaticTaskInput
+    propertyName: number1
+    description: "This is the first number for the sum "
+    entity: NumberPrebuiltEntity
+    shouldPromptUser: true
+
+  - kind: AutomaticTaskInput
+    propertyName: number2
+    description: "This is the second number for the sum "
+    entity: NumberPrebuiltEntity
+    shouldPromptUser: true
+
+modelDescription: This sample topic performs the sub between the two numbers in input
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: SetVariable
+      id: setVariable_REPLACE
+      variable: Topic.result
+      value: =Text(Topic.number1 + Topic.number2)
+
+inputType:
+  properties:
+    number1:
+      displayName: number1
+      description: "This is the first number for the sum "
+      type: Number
+
+    number2:
+      displayName: number2
+      type: Number
+
+outputType:
+  properties:
+    result:
+      displayName: result
+      description: This is the result of the sum, converted to text
+      type: String

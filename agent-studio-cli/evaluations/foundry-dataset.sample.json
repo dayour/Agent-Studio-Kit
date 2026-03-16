@@ -1,0 +1,16 @@
+{
+  "name": "agent-studio-cli-sample-evaluation",
+  "evaluators": [
+    "builtin.fluency",
+    "builtin.task_adherence",
+    "builtin.violence"
+  ],
+  "data": [
+    {
+      "query": "How do I list available Power Platform environments with Agent Studio CLI?"
+    },
+    {
+      "query": "Show me the command to export a solution named ContosoCore to ./ContosoCore.zip."
+    }
+  ]
+}

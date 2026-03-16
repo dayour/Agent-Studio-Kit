@@ -1,5 +1,5 @@
 import { WorkflowNode } from './types';
-import { createChatCompletion } from './llm-client';
+import { createChatCompletion, getDefaultModel } from './llm-client';
 
 export const generateWorkflowNodes = async (
   userDescription: string,
@@ -58,7 +58,7 @@ Generate a complete workflow with appropriate nodes. Return only the JSON array 
 
   try {
     const response = await createChatCompletion({
-      model: 'claude-sonnet-4-5-20250514',
+      model: getDefaultModel(),
       max_tokens: 4000,
       temperature: 0.7,
       system: systemPrompt,

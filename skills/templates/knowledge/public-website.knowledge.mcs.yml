@@ -1,0 +1,6 @@
+# Name: <Knowledge Source Name>
+# <What this knowledge source provides>
+kind: KnowledgeSourceConfiguration
+source:
+  kind: PublicSiteSearchSource
+  site: https://example.com/docs

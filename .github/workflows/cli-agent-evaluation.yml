@@ -1,0 +1,107 @@
+name: CLI Agent Evaluation
+
+on:
+  workflow_dispatch:
+    inputs:
+      agent_ids:
+        description: Comma-separated Foundry agent IDs to evaluate (for example my-agent:1 or my-agent:1,my-agent:2)
+        required: false
+        type: string
+      baseline_agent_id:
+        description: Optional baseline agent ID used when comparing multiple agents
+        required: false
+        type: string
+      deployment_name:
+        description: Optional override for the Azure AI model deployment name
+        required: false
+        type: string
+      azure_ai_project_endpoint:
+        description: Optional override for the Azure AI Project endpoint
+        required: false
+        type: string
+      data_path:
+        description: Repository-relative path to the evaluation dataset JSON file
+        required: false
+        default: agent-studio-cli/evaluations/foundry-dataset.sample.json
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  evaluate:
+    name: Evaluate Foundry agent with CLI dataset
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve evaluation configuration
+        shell: bash
+        env:
+          INPUT_AZURE_AI_PROJECT_ENDPOINT: ${{ inputs.azure_ai_project_endpoint }}
+          INPUT_DEPLOYMENT_NAME: ${{ inputs.deployment_name }}
+          INPUT_AGENT_IDS: ${{ inputs.agent_ids }}
+          INPUT_BASELINE_AGENT_ID: ${{ inputs.baseline_agent_id }}
+          INPUT_DATA_PATH: ${{ inputs.data_path }}
+          VAR_AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          VAR_AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          VAR_AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          VAR_AZURE_AI_PROJECT_ENDPOINT: ${{ vars.AZURE_AI_PROJECT_ENDPOINT }}
+          VAR_AZURE_AI_EVAL_DEPLOYMENT_NAME: ${{ vars.AZURE_AI_EVAL_DEPLOYMENT_NAME }}
+          VAR_AZURE_AI_EVAL_AGENT_IDS: ${{ vars.AZURE_AI_EVAL_AGENT_IDS }}
+          VAR_AZURE_AI_EVAL_BASELINE_AGENT_ID: ${{ vars.AZURE_AI_EVAL_BASELINE_AGENT_ID }}
+        run: |
+          set -euo pipefail
+
+          project_endpoint="${INPUT_AZURE_AI_PROJECT_ENDPOINT:-$VAR_AZURE_AI_PROJECT_ENDPOINT}"
+          deployment_name="${INPUT_DEPLOYMENT_NAME:-$VAR_AZURE_AI_EVAL_DEPLOYMENT_NAME}"
+          agent_ids="${INPUT_AGENT_IDS:-$VAR_AZURE_AI_EVAL_AGENT_IDS}"
+          baseline_agent_id="${INPUT_BASELINE_AGENT_ID:-$VAR_AZURE_AI_EVAL_BASELINE_AGENT_ID}"
+          data_path="${INPUT_DATA_PATH:-agent-studio-cli/evaluations/foundry-dataset.sample.json}"
+
+          missing=()
+          [[ -n "$VAR_AZURE_CLIENT_ID" ]] || missing+=("repository variable AZURE_CLIENT_ID")
+          [[ -n "$VAR_AZURE_TENANT_ID" ]] || missing+=("repository variable AZURE_TENANT_ID")
+          [[ -n "$VAR_AZURE_SUBSCRIPTION_ID" ]] || missing+=("repository variable AZURE_SUBSCRIPTION_ID")
+          [[ -n "$project_endpoint" ]] || missing+=("workflow input azure_ai_project_endpoint or repository variable AZURE_AI_PROJECT_ENDPOINT")
+          [[ -n "$deployment_name" ]] || missing+=("workflow input deployment_name or repository variable AZURE_AI_EVAL_DEPLOYMENT_NAME")
+          [[ -n "$agent_ids" ]] || missing+=("workflow input agent_ids or repository variable AZURE_AI_EVAL_AGENT_IDS")
+
+          if [[ ! -f "$data_path" ]]; then
+            echo "Evaluation dataset not found at '$data_path'." >&2
+            echo "Provide a valid workflow input data_path or commit the dataset file before rerunning." >&2
+            exit 1
+          fi
+
+          if (( ${#missing[@]} > 0 )); then
+            echo "Missing required Azure AI evaluation configuration:" >&2
+            printf ' - %s\n' "${missing[@]}" >&2
+            exit 1
+          fi
+
+          {
+            echo "AZURE_AI_PROJECT_ENDPOINT=$project_endpoint"
+            echo "DEPLOYMENT_NAME=$deployment_name"
+            echo "AGENT_IDS=$agent_ids"
+            echo "BASELINE_AGENT_ID=$baseline_agent_id"
+            echo "DATA_PATH=$data_path"
+          } >> "$GITHUB_ENV"
+
+      - name: Azure login using Federated Credentials
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Run Azure AI agent evaluation
+        uses: microsoft/ai-agent-evals@v3-beta
+        with:
+          azure-ai-project-endpoint: ${{ env.AZURE_AI_PROJECT_ENDPOINT }}
+          deployment-name: ${{ env.DEPLOYMENT_NAME }}
+          data-path: ${{ github.workspace }}/${{ env.DATA_PATH }}
+          agent-ids: ${{ env.AGENT_IDS }}
+          baseline-agent-id: ${{ env.BASELINE_AGENT_ID }}

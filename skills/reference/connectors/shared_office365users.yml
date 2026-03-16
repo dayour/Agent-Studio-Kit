@@ -1,0 +1,506 @@
+kind: ConnectorDefinition
+connectorId: /providers/Microsoft.PowerApps/apis/shared_office365users
+displayName: Office 365 Users
+description: Office 365 Users Connection provider lets you access user profiles in your organization using your Office 365 account. You can get your profile, a user's profile, a user's manager, or direct reports.
+connectorType: Public
+operations:
+  - displayName: Get my profile (V2)
+    description: "Retrieves the profile of the current user from Microsoft Graph. Learn more: https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/user#properties"
+    inputType:
+      properties:
+        $select:
+          displayName: Select fields
+          description: Comma-separated list of user properties to retrieve (e.g., "id, displayName, mail, department")
+          isRequired: false
+          order: 0
+          type: String
+    outputType:
+      kind: Record
+      properties:
+        aboutMe:
+          displayName: About me
+          description: A freeform text entry field for the user to describe themselves
+          order: 0
+          type: String
+        accountEnabled:
+          displayName: Account enabled
+          description: Whether the account is enabled
+          order: 1
+          type: Boolean
+        birthday:
+          displayName: Birthday
+          description: The birthday of the user
+          order: 2
+          type: DateTime
+        businessPhones:
+          displayName: Business phones
+          description: The telephone numbers for the user
+          order: 3
+          type: String
+        city:
+          displayName: City
+          description: The city in which the user is located
+          order: 4
+          type: String
+        companyName:
+          displayName: Company name
+          description: The company name which the user is associated
+          order: 5
+          type: String
+        country:
+          displayName: Country
+          description: The country/region in which the user is located
+          order: 6
+          type: String
+        department:
+          displayName: Department
+          description: The name for the department in which the user works
+          order: 7
+          type: String
+        displayName:
+          displayName: Display name
+          description: The name displayed in the address book for the user
+          order: 8
+          type: String
+        givenName:
+          displayName: Given name
+          description: The given name (first name) of the user
+          order: 9
+          type: String
+        hireDate:
+          displayName: Hire date
+          description: The hire date of the user
+          order: 10
+          type: DateTime
+        id:
+          displayName: Id
+          description: The unique identifier for the user
+          order: 11
+          type: String
+        interests:
+          displayName: Interests
+          description: A list of the user's interests
+          order: 12
+          type: String
+        jobTitle:
+          displayName: Job title
+          description: The user's job title
+          order: 13
+          type: String
+        mail:
+          displayName: Mail
+          description: The SMTP address for the user
+          order: 14
+          type: String
+        mailNickname:
+          displayName: Mail nickname
+          description: The mail alias for the user
+          order: 15
+          type: String
+        mobilePhone:
+          displayName: Mobile phone
+          description: The primary cellular telephone number for the user
+          order: 16
+          type: String
+        mySite:
+          displayName: My site
+          description: The URL for the user's personal site
+          order: 17
+          type: String
+        officeLocation:
+          displayName: Office location
+          description: The office location in the user's place of business
+          order: 18
+          type: String
+        pastProjects:
+          displayName: Past projects
+          description: A list of the user's past projects
+          order: 19
+          type: String
+        postalCode:
+          displayName: Postal code
+          description: The postal code for the user's postal address
+          order: 20
+          type: String
+        preferredLanguage:
+          displayName: Preferred language
+          description: The preferred language for the user (e.g., en-US)
+          order: 21
+          type: String
+        preferredName:
+          displayName: Preferred name
+          description: The preferred name for the user
+          order: 22
+          type: String
+        responsibilities:
+          displayName: Responsibilities
+          description: A list of the user's responsibilities
+          order: 23
+          type: String
+        schools:
+          displayName: Schools
+          description: A list of the user's schools attended
+          order: 24
+          type: String
+        skills:
+          displayName: Skills
+          description: A list of the user's skills
+          order: 25
+          type: String
+        state:
+          displayName: State
+          description: The state or province in the user's address
+          order: 26
+          type: String
+        streetAddress:
+          displayName: Street address
+          description: The street address of the user's place of business
+          order: 27
+          type: String
+        surname:
+          displayName: Surname
+          description: The user's surname (family name or last name)
+          order: 28
+          type: String
+        userPrincipalName:
+          displayName: User principal name
+          description: The user principal name (UPN) of the user (e.g., user@contoso.com)
+          order: 29
+          type: String
+        userType:
+          displayName: User type
+          description: The user type (Member or Guest)
+          order: 30
+          type: String
+    operationId: MyProfile_V2
+
+  - displayName: Get user profile (V2)
+    description: "Retrieves a specific user's profile from Microsoft Graph by user principal name or user ID."
+    inputType:
+      properties:
+        id:
+          displayName: User (UPN)
+          description: User principal name or user ID (e.g., user@contoso.com or a GUID)
+          isRequired: true
+          order: 0
+          type: String
+        $select:
+          displayName: Select fields
+          description: Comma-separated list of user properties to retrieve
+          isRequired: false
+          order: 1
+          type: String
+    outputType:
+      kind: Record
+      properties:
+        aboutMe:
+          displayName: About me
+          description: A freeform text entry field for the user to describe themselves
+          order: 0
+          type: String
+        accountEnabled:
+          displayName: Account enabled
+          description: Whether the account is enabled
+          order: 1
+          type: Boolean
+        birthday:
+          displayName: Birthday
+          description: The birthday of the user
+          order: 2
+          type: DateTime
+        businessPhones:
+          displayName: Business phones
+          description: The telephone numbers for the user
+          order: 3
+          type: String
+        city:
+          displayName: City
+          description: The city in which the user is located
+          order: 4
+          type: String
+        companyName:
+          displayName: Company name
+          description: The company name which the user is associated
+          order: 5
+          type: String
+        country:
+          displayName: Country
+          description: The country/region in which the user is located
+          order: 6
+          type: String
+        department:
+          displayName: Department
+          description: The name for the department in which the user works
+          order: 7
+          type: String
+        displayName:
+          displayName: Display name
+          description: The name displayed in the address book for the user
+          order: 8
+          type: String
+        givenName:
+          displayName: Given name
+          description: The given name (first name) of the user
+          order: 9
+          type: String
+        hireDate:
+          displayName: Hire date
+          description: The hire date of the user
+          order: 10
+          type: DateTime
+        id:
+          displayName: Id
+          description: The unique identifier for the user
+          order: 11
+          type: String
+        interests:
+          displayName: Interests
+          description: A list of the user's interests
+          order: 12
+          type: String
+        jobTitle:
+          displayName: Job title
+          description: The user's job title
+          order: 13
+          type: String
+        mail:
+          displayName: Mail
+          description: The SMTP address for the user
+          order: 14
+          type: String
+        mailNickname:
+          displayName: Mail nickname
+          description: The mail alias for the user
+          order: 15
+          type: String
+        mobilePhone:
+          displayName: Mobile phone
+          description: The primary cellular telephone number for the user
+          order: 16
+          type: String
+        mySite:
+          displayName: My site
+          description: The URL for the user's personal site
+          order: 17
+          type: String
+        officeLocation:
+          displayName: Office location
+          description: The office location in the user's place of business
+          order: 18
+          type: String
+        pastProjects:
+          displayName: Past projects
+          description: A list of the user's past projects
+          order: 19
+          type: String
+        postalCode:
+          displayName: Postal code
+          description: The postal code for the user's postal address
+          order: 20
+          type: String
+        preferredLanguage:
+          displayName: Preferred language
+          description: The preferred language for the user (e.g., en-US)
+          order: 21
+          type: String
+        preferredName:
+          displayName: Preferred name
+          description: The preferred name for the user
+          order: 22
+          type: String
+        responsibilities:
+          displayName: Responsibilities
+          description: A list of the user's responsibilities
+          order: 23
+          type: String
+        schools:
+          displayName: Schools
+          description: A list of the user's schools attended
+          order: 24
+          type: String
+        skills:
+          displayName: Skills
+          description: A list of the user's skills
+          order: 25
+          type: String
+        state:
+          displayName: State
+          description: The state or province in the user's address
+          order: 26
+          type: String
+        streetAddress:
+          displayName: Street address
+          description: The street address of the user's place of business
+          order: 27
+          type: String
+        surname:
+          displayName: Surname
+          description: The user's surname (family name or last name)
+          order: 28
+          type: String
+        userPrincipalName:
+          displayName: User principal name
+          description: The user principal name (UPN) of the user (e.g., user@contoso.com)
+          order: 29
+          type: String
+        userType:
+          displayName: User type
+          description: The user type (Member or Guest)
+          order: 30
+          type: String
+    operationId: UserProfile_V2
+
+  - displayName: Get user photo
+    description: Retrieves the photo of the specified user or the current user.
+    inputType:
+      properties:
+        id:
+          displayName: User (UPN)
+          description: User principal name or user ID. Leave blank for current user.
+          isRequired: false
+          order: 0
+          type: String
+    outputType:
+      kind: Record
+      properties:
+        value:
+          displayName: Photo
+          description: The user's photo as a base64-encoded string
+          order: 0
+          type: String
+    operationId: UserPhoto
+
+  - displayName: Search for users (V2)
+    description: Searches for users in the organization by name, email, or other attributes using Microsoft Graph.
+    inputType:
+      properties:
+        searchTerm:
+          displayName: Search term
+          description: Search text to find users (searches displayName and mail)
+          isRequired: true
+          order: 0
+          type: String
+        top:
+          displayName: Top
+          description: Maximum number of results to return
+          isRequired: false
+          order: 1
+          type: Number
+        $select:
+          displayName: Select fields
+          description: Comma-separated list of user properties to retrieve
+          isRequired: false
+          order: 2
+          type: String
+    outputType:
+      kind: Table
+      properties:
+        value:
+          description: List of matching users
+          order: 0
+          type:
+            kind: Record
+            properties:
+              displayName:
+                displayName: Display name
+                order: 0
+                type: String
+              mail:
+                displayName: Mail
+                order: 1
+                type: String
+              id:
+                displayName: Id
+                order: 2
+                type: String
+              userPrincipalName:
+                displayName: User principal name
+                order: 3
+                type: String
+    operationId: SearchUser_V2
+
+  - displayName: Get direct reports (V2)
+    description: Retrieves the direct reports of the specified user from Microsoft Graph.
+    inputType:
+      properties:
+        id:
+          displayName: User (UPN)
+          description: User principal name or user ID
+          isRequired: true
+          order: 0
+          type: String
+    outputType:
+      kind: Table
+      properties:
+        value:
+          description: List of direct reports
+          order: 0
+          type:
+            kind: Record
+            properties:
+              displayName:
+                displayName: Display name
+                order: 0
+                type: String
+              mail:
+                displayName: Mail
+                order: 1
+                type: String
+              id:
+                displayName: Id
+                order: 2
+                type: String
+              jobTitle:
+                displayName: Job title
+                order: 3
+                type: String
+              department:
+                displayName: Department
+                order: 4
+                type: String
+    operationId: DirectReports_V2
+
+  - displayName: Get manager (V2)
+    description: Retrieves the manager of the specified user from Microsoft Graph.
+    inputType:
+      properties:
+        id:
+          displayName: User (UPN)
+          description: User principal name or user ID
+          isRequired: true
+          order: 0
+          type: String
+    outputType:
+      kind: Record
+      properties:
+        displayName:
+          displayName: Display name
+          description: The manager's display name
+          order: 0
+          type: String
+        mail:
+          displayName: Mail
+          description: The manager's email address
+          order: 1
+          type: String
+        id:
+          displayName: Id
+          description: The manager's unique identifier
+          order: 2
+          type: String
+        jobTitle:
+          displayName: Job title
+          description: The manager's job title
+          order: 3
+          type: String
+        department:
+          displayName: Department
+          description: The manager's department
+          order: 4
+          type: String
+        userPrincipalName:
+          displayName: User principal name
+          description: The manager's UPN
+          order: 5
+          type: String
+    operationId: Manager_V2

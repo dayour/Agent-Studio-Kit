@@ -1,0 +1,37 @@
+# Name: Microsoft Teams - Post message in a chat or channel
+kind: TaskDialog
+inputs:
+  - kind: AutomaticTaskInput
+    propertyName: poster
+    description: Who should post this
+
+  - kind: AutomaticTaskInput
+    propertyName: location
+    description: Where should be posted
+
+  - kind: AutomaticTaskInput
+    propertyName: body
+    description: The post message request to be posted
+
+modelDisplayName: Post message in a chat or channel
+modelDescription: Posts a message to a chat or a channel
+
+outputs:
+  - propertyName: conversationId
+    description: The chat's unique identifier for the chat
+
+  - propertyName: id
+    description: Unique message ID for the message sent
+
+  - propertyName: messageLink
+    description: Link to the message in MS Teams
+
+action:
+  kind: InvokeConnectorTaskAction
+  connectionReference: _CONNECTION_REFERENCE_
+  connectionProperties:
+    mode: Maker
+
+  operationId: PostMessageToConversation
+
+outputMode: All

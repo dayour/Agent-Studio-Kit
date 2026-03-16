@@ -1,0 +1,32 @@
+# Name: Fallback
+# Template: Unknown intent fallback with escalation path
+# NOTE: Replace all _REPLACE IDs with unique random IDs before use
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnUnknownIntent
+  id: main
+  priority: -1
+  actions:
+    - kind: ConditionGroup
+      id: conditionGroup_REPLACE1
+      conditions:
+        - id: conditionItem_REPLACE2
+          condition: =System.FallbackCount < 3
+          actions:
+            - kind: SendActivity
+              id: sendMessage_REPLACE3
+              activity:
+                text:
+                  - I'm not sure I understand. Could you rephrase that?
+                  - I didn't quite get that. Can you try asking in a different way?
+
+      elseActions:
+        - kind: SendActivity
+          id: sendMessage_REPLACE4
+          activity:
+            text:
+              - I'm having trouble understanding your request. Let me connect you with someone who can help.
+
+        - kind: BeginDialog
+          id: beginDialog_REPLACE5
+          dialog: <AGENT_SCHEMA>.topic.Escalate

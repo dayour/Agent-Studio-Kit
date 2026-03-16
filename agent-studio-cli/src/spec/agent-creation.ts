@@ -1,5 +1,5 @@
 import { AgentCapability, AgentSpec } from './types';
-import { createChatCompletion } from './llm-client';
+import { createChatCompletion, getDefaultModel } from './llm-client';
 
 const buildInstructionGuidance = (audience?: 'customers' | 'employees' | null, channels?: string[] | null): string => {
   const audienceSection = audience === 'customers'
@@ -130,7 +130,7 @@ Return ONLY valid JSON with no markdown formatting or extra text:
 
   try {
     const response = await createChatCompletion({
-      model: 'claude-sonnet-4-5-20250514',
+      model: getDefaultModel(),
       max_tokens: 4000,
       system: systemPrompt,
       messages: [
@@ -180,7 +180,7 @@ export const updateAgentInstructionsFromBrief = async (
   channels?: string[] | null
 ): Promise<string> => {
   const response = await createChatCompletion({
-    model: 'claude-sonnet-4-5-20250514',
+    model: getDefaultModel(),
     max_tokens: 2048,
     system: `You are updating AI agent instructions based on a refined description of what the agent should do.
 

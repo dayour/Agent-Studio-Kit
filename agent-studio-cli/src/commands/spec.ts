@@ -7,7 +7,30 @@ import path from 'path';
 import { generateAgentFromDescription, updateAgentInstructionsFromBrief } from '../spec/agent-creation';
 import { classifyIntentWithLLM, classifyIntentLocally } from '../spec/intent-classification';
 import { generateWorkflowNodes } from '../spec/workflow-generation';
-import { setAnthropicApiKey, setLlmProxyUrl, setDefaultModel } from '../config';
+import {
+  setAnthropicApiKey,
+  setCopilotSdkGithubToken,
+  setCopilotSdkUseLoggedInUser,
+  setDefaultModel,
+  setLlmLibPath,
+  setLlmLibTool,
+  setLlmLibUrl,
+  setLlmProvider,
+  setLlmProxyUrl,
+} from '../config';
+
+function parseBooleanOption(optionName: string, value: string): boolean {
+  const normalized = value.trim().toLowerCase();
+  if (['true', '1', 'yes', 'y'].includes(normalized)) {
+    return true;
+  }
+  if (['false', '0', 'no', 'n'].includes(normalized)) {
+    return false;
+  }
+
+  console.error(chalk.red(`Invalid value for ${optionName}: ${value}. Use true or false.`));
+  process.exit(1);
+}
 
 function writeOutput(data: unknown, outputPath?: string): void {
   const json = JSON.stringify(data, null, 2);
@@ -165,26 +188,116 @@ export const specCommand = new Command('spec')
   .addCommand(
     new Command('config')
       .description('Configure LLM provider settings')
+      .option('--provider <provider>', 'Set LLM provider: anthropic, proxy, llm-lib, or copilot-sdk')
       .option('--api-key <key>', 'Set Anthropic API key')
       .option('--proxy-url <url>', 'Set LLM proxy URL')
+      .option('--llm-lib-path <path>', 'Set local llm-lib installation path')
+      .option('--llm-lib-url <url>', 'Set llm-lib UI server URL')
+      .option('--llm-lib-tool <tool>', 'Set llm-lib chat tool (default: chat_model_router)')
+      .option('--github-token <token>', 'Set GitHub token for Copilot SDK authentication')
+      .option('--use-logged-in-user <true|false>', 'Use the logged-in GitHub Copilot CLI account for Copilot SDK authentication')
       .option('--model <model>', 'Set default model')
       .action((options) => {
+        let providerUpdated = false;
+
+        if (options.provider) {
+          const provider = String(options.provider).trim().toLowerCase();
+          if (!['anthropic', 'proxy', 'llm-lib', 'copilot-sdk'].includes(provider)) {
+            console.error(chalk.red(`Unsupported LLM provider: ${options.provider}`));
+            process.exit(1);
+          }
+          setLlmProvider(provider as 'anthropic' | 'proxy' | 'llm-lib' | 'copilot-sdk');
+          providerUpdated = true;
+          console.log(chalk.green(`LLM provider set to: ${provider}`));
+        }
+
         if (options.apiKey) {
           setAnthropicApiKey(options.apiKey);
           console.log(chalk.green('Anthropic API key saved'));
+          if (!providerUpdated) {
+            setLlmProvider('anthropic');
+            providerUpdated = true;
+            console.log(chalk.green('LLM provider set to: anthropic'));
+          }
         }
         if (options.proxyUrl) {
           setLlmProxyUrl(options.proxyUrl);
           console.log(chalk.green(`LLM proxy URL set to: ${options.proxyUrl}`));
+          if (!providerUpdated) {
+            setLlmProvider('proxy');
+            providerUpdated = true;
+            console.log(chalk.green('LLM provider set to: proxy'));
+          }
+        }
+        if (options.llmLibPath) {
+          const resolvedPath = path.resolve(options.llmLibPath);
+          setLlmLibPath(resolvedPath);
+          console.log(chalk.green(`llm-lib path set to: ${resolvedPath}`));
+          if (!providerUpdated) {
+            setLlmProvider('llm-lib');
+            providerUpdated = true;
+            console.log(chalk.green('LLM provider set to: llm-lib'));
+          }
+        }
+        if (options.llmLibUrl) {
+          setLlmLibUrl(options.llmLibUrl);
+          console.log(chalk.green(`llm-lib URL set to: ${options.llmLibUrl}`));
+          if (!providerUpdated) {
+            setLlmProvider('llm-lib');
+            providerUpdated = true;
+            console.log(chalk.green('LLM provider set to: llm-lib'));
+          }
+        }
+        if (options.llmLibTool) {
+          setLlmLibTool(options.llmLibTool);
+          console.log(chalk.green(`llm-lib tool set to: ${options.llmLibTool}`));
+          if (!providerUpdated) {
+            setLlmProvider('llm-lib');
+            providerUpdated = true;
+            console.log(chalk.green('LLM provider set to: llm-lib'));
+          }
+        }
+        if (options.githubToken) {
+          setCopilotSdkGithubToken(options.githubToken);
+          console.log(chalk.green('Copilot SDK GitHub token saved'));
+          if (!providerUpdated) {
+            setLlmProvider('copilot-sdk');
+            providerUpdated = true;
+            console.log(chalk.green('LLM provider set to: copilot-sdk'));
+          }
+        }
+        if (options.useLoggedInUser !== undefined) {
+          const useLoggedInUser = parseBooleanOption('--use-logged-in-user', String(options.useLoggedInUser));
+          setCopilotSdkUseLoggedInUser(useLoggedInUser);
+          console.log(chalk.green(`Copilot SDK logged-in user mode set to: ${useLoggedInUser}`));
+          if (!providerUpdated) {
+            setLlmProvider('copilot-sdk');
+            providerUpdated = true;
+            console.log(chalk.green('LLM provider set to: copilot-sdk'));
+          }
         }
         if (options.model) {
           setDefaultModel(options.model);
           console.log(chalk.green(`Default model set to: ${options.model}`));
         }
-        if (!options.apiKey && !options.proxyUrl && !options.model) {
+        if (
+          !options.provider &&
+          !options.apiKey &&
+          !options.proxyUrl &&
+          !options.llmLibPath &&
+          !options.llmLibUrl &&
+          !options.llmLibTool &&
+          !options.githubToken &&
+          options.useLoggedInUser === undefined &&
+          !options.model
+        ) {
           console.log(chalk.yellow('Usage:'));
-          console.log('  agent-studio spec config --api-key <ANTHROPIC_API_KEY>');
-          console.log('  agent-studio spec config --proxy-url <LLM_PROXY_URL>');
+          console.log('  agent-studio spec config --provider anthropic --api-key <ANTHROPIC_API_KEY>');
+          console.log('  agent-studio spec config --provider proxy --proxy-url <LLM_PROXY_URL>');
+          console.log('  agent-studio spec config --provider llm-lib --llm-lib-path <LLM_LIB_PATH>');
+          console.log('  agent-studio spec config --provider copilot-sdk --use-logged-in-user true --model gpt-4.1');
+          console.log('  agent-studio spec config --provider copilot-sdk --github-token <GITHUB_TOKEN> --model gpt-4.1');
+          console.log('  agent-studio spec config --llm-lib-url <LLM_LIB_URL> --llm-lib-tool <TOOL_NAME>');
           console.log('  agent-studio spec config --model <MODEL_NAME>');
         }
       })

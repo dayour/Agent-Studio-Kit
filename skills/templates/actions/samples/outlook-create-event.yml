@@ -1,0 +1,87 @@
+# Name: Create event for follow-up tasks
+kind: TaskDialog
+inputs:
+  - kind: ManualTaskInput
+    propertyName: timeZone
+    value: (UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna
+
+  - kind: AutomaticTaskInput
+    propertyName: table
+
+modelDisplayName: Create event for follow-up tasks
+modelDescription: This operation creates a new event in the user calendar
+
+outputs:
+  - propertyName: body
+
+  - propertyName: categories
+
+  - propertyName: createdDateTime
+
+  - propertyName: end
+
+  - propertyName: endWithTimeZone
+
+  - propertyName: iCalUId
+
+  - propertyName: id
+
+  - propertyName: importance
+
+  - propertyName: isAllDay
+
+  - propertyName: isHtml
+
+  - propertyName: isReminderOn
+
+  - propertyName: lastModifiedDateTime
+
+  - propertyName: location
+
+  - propertyName: numberOfOccurences
+
+  - propertyName: optionalAttendees
+
+  - propertyName: organizer
+
+  - propertyName: recurrence
+
+  - propertyName: recurrenceEnd
+
+  - propertyName: reminderMinutesBeforeStart
+
+  - propertyName: requiredAttendees
+
+  - propertyName: resourceAttendees
+
+  - propertyName: responseRequested
+
+  - propertyName: responseTime
+
+  - propertyName: responseType
+
+  - propertyName: sensitivity
+
+  - propertyName: seriesMasterId
+
+  - propertyName: showAs
+
+  - propertyName: start
+
+  - propertyName: startWithTimeZone
+
+  - propertyName: subject
+
+  - propertyName: timeZone
+
+  - propertyName: webLink
+
+action:
+  kind: InvokeConnectorTaskAction
+  connectionReference: _CONNECTION_REFERENCE_
+  connectionProperties:
+    mode: Maker
+
+  operationId: V4CalendarPostItem
+
+outputMode: All

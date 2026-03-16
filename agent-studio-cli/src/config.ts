@@ -5,7 +5,13 @@ interface ConfigStore {
   lastUsedProfile?: string;
   recentSolutions?: string[];
   anthropicApiKey?: string;
+  llmProvider?: 'anthropic' | 'proxy' | 'llm-lib' | 'copilot-sdk';
   llmProxyUrl?: string;
+  llmLibPath?: string;
+  llmLibUrl?: string;
+  llmLibTool?: string;
+  copilotSdkGithubToken?: string;
+  copilotSdkUseLoggedInUser?: boolean;
   defaultModel?: string;
 }
 
@@ -51,12 +57,60 @@ export function getAnthropicApiKey(): string | undefined {
   return config.get('anthropicApiKey');
 }
 
+export function setLlmProvider(provider: 'anthropic' | 'proxy' | 'llm-lib' | 'copilot-sdk'): void {
+  config.set('llmProvider', provider);
+}
+
+export function getLlmProvider(): 'anthropic' | 'proxy' | 'llm-lib' | 'copilot-sdk' | undefined {
+  return config.get('llmProvider');
+}
+
 export function setLlmProxyUrl(url: string): void {
   config.set('llmProxyUrl', url);
 }
 
 export function getLlmProxyUrl(): string | undefined {
   return config.get('llmProxyUrl');
+}
+
+export function setLlmLibPath(llmLibPath: string): void {
+  config.set('llmLibPath', llmLibPath);
+}
+
+export function getLlmLibPath(): string | undefined {
+  return config.get('llmLibPath');
+}
+
+export function setLlmLibUrl(url: string): void {
+  config.set('llmLibUrl', url);
+}
+
+export function getLlmLibUrl(): string | undefined {
+  return config.get('llmLibUrl');
+}
+
+export function setLlmLibTool(tool: string): void {
+  config.set('llmLibTool', tool);
+}
+
+export function getLlmLibTool(): string | undefined {
+  return config.get('llmLibTool');
+}
+
+export function setCopilotSdkGithubToken(token: string): void {
+  config.set('copilotSdkGithubToken', token);
+}
+
+export function getCopilotSdkGithubToken(): string | undefined {
+  return config.get('copilotSdkGithubToken');
+}
+
+export function setCopilotSdkUseLoggedInUser(useLoggedInUser: boolean): void {
+  config.set('copilotSdkUseLoggedInUser', useLoggedInUser);
+}
+
+export function getCopilotSdkUseLoggedInUser(): boolean | undefined {
+  return config.get('copilotSdkUseLoggedInUser');
 }
 
 export function setDefaultModel(model: string): void {
