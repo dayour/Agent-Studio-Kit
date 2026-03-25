@@ -46,6 +46,34 @@ agent-studio auth select my-profile
 agent-studio env list
 ```
 
+### Schema Inspection
+
+```bash
+# List built-in schema definitions
+agent-studio schema list
+
+# Show a built-in schema definition
+agent-studio schema show groundtruth-audit-config
+
+# Validate a JSON file against a built-in schema
+agent-studio schema validate groundtruth-audit-config ./groundtruth-audit.json
+agent-studio schema validate copilot-studio-agent-definition ./normalized-agent.json
+```
+
+Built-in schemas currently cover:
+
+- `groundtruth-audit-config`
+- `copilot-studio-agent-definition`
+- `copilot-studio-environment-summary`
+
+The Copilot Studio schemas explicitly model evaluation concepts surfaced in the native UI, including:
+
+- `csv-upload`
+- `quick-question-set`
+- `full-question-set`
+- `test-chat-conversation`
+- `manual-questions`
+
 ### Solution Management
 
 ```bash
@@ -62,6 +90,30 @@ agent-studio solution import ./MySolution.zip
 # Clone a solution to local directory
 agent-studio solution clone MySolution -o ./MySolutionFolder
 ```
+
+### Audit and Dataverse Mapping
+
+```bash
+# Write a sample audit config
+agent-studio audit init-config -o ./groundtruth-audit.sample.json
+
+# Validate an audit config
+agent-studio audit validate-config ./groundtruth-audit.sample.json
+
+# Normalize Dataverse or Copilot Studio payloads into the CLI agent definition
+agent-studio audit map-agent --bot-file ./bot-create-payload.json
+agent-studio audit map-agent --bot-file ./bot-create-payload.json --settings-file ./botcomponents-response.json --config ./groundtruth-audit.sample.json
+
+# Run a local audit over mapped payloads
+agent-studio audit run --bot-file ./bot-create-payload.json --settings-file ./botcomponents-response.json --config ./groundtruth-audit.sample.json
+```
+
+The audit flow is designed to bridge adjacent Copilot Studio artifacts into a normalized CLI definition. Supported inputs include:
+
+- Dataverse bot records
+- Bot create payload captures
+- Botcomponents response captures
+- Ground-truth audit config files used to enrich environment, direct-line, and studio metadata
 
 ## Aliases
 

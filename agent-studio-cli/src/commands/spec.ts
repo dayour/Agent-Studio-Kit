@@ -2,7 +2,6 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import ora from 'ora';
-import fs from 'fs-extra';
 import path from 'path';
 import { generateAgentFromDescription, updateAgentInstructionsFromBrief } from '../spec/agent-creation';
 import { classifyIntentWithLLM, classifyIntentLocally } from '../spec/intent-classification';
@@ -18,6 +17,7 @@ import {
   setLlmProvider,
   setLlmProxyUrl,
 } from '../config';
+import { writeJsonOutput } from '../utils/io';
 
 function parseBooleanOption(optionName: string, value: string): boolean {
   const normalized = value.trim().toLowerCase();
@@ -30,17 +30,6 @@ function parseBooleanOption(optionName: string, value: string): boolean {
 
   console.error(chalk.red(`Invalid value for ${optionName}: ${value}. Use true or false.`));
   process.exit(1);
-}
-
-function writeOutput(data: unknown, outputPath?: string): void {
-  const json = JSON.stringify(data, null, 2);
-  if (outputPath) {
-    const resolved = path.resolve(outputPath);
-    fs.outputFileSync(resolved, json);
-    console.log(chalk.green(`Output written to: ${resolved}`));
-  } else {
-    console.log(json);
-  }
 }
 
 export const specCommand = new Command('spec')
@@ -64,7 +53,7 @@ export const specCommand = new Command('spec')
           );
 
           spinner.succeed('Agent specification generated');
-          writeOutput(spec, options.output);
+          writeJsonOutput(spec, options.output);
         } catch (error: any) {
           console.error(chalk.red('Generation failed:'), error.message);
           process.exit(1);
@@ -87,7 +76,7 @@ export const specCommand = new Command('spec')
             result = await classifyIntentWithLLM(description);
             spinner.succeed(`Classified as: ${result.type} (${result.confidence} confidence)`);
           }
-          writeOutput(result, options.output);
+          writeJsonOutput(result, options.output);
         } catch (error: any) {
           console.error(chalk.red('Classification failed:'), error.message);
           process.exit(1);
@@ -107,7 +96,7 @@ export const specCommand = new Command('spec')
           const nodes = await generateWorkflowNodes(description, options.name);
 
           spinner.succeed(`Generated ${nodes.length} workflow nodes`);
-          writeOutput(nodes, options.output);
+          writeJsonOutput(nodes, options.output);
         } catch (error: any) {
           console.error(chalk.red('Workflow generation failed:'), error.message);
           process.exit(1);
@@ -169,7 +158,7 @@ export const specCommand = new Command('spec')
               nodes,
               classification
             };
-            writeOutput(result, options.output);
+            writeJsonOutput(result, options.output);
           } else {
             const genSpinner = ora('Generating agent specification...').start();
             const channels = answers.channels.length > 0 ? answers.channels : null;
@@ -177,7 +166,7 @@ export const specCommand = new Command('spec')
             genSpinner.succeed(`Agent generated: ${spec.name}`);
 
             const result = { type: 'agent' as const, ...spec, classification };
-            writeOutput(result, options.output);
+            writeJsonOutput(result, options.output);
           }
         } catch (error: any) {
           console.error(chalk.red('Interactive creation failed:'), error.message);
