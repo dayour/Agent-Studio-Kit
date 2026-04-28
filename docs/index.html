@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Agent Studio Kit - A comprehensive toolkit for Microsoft Copilot Studio development, governance, and testing">
+    <meta name="description" content="Agent Studio Kit - A governed workbench for Microsoft Copilot Studio testing, compliance, analytics, and deployment workflows">
     <meta name="theme-color" content="#030312">
     <title>Agent Studio Kit | Microsoft Copilot Studio Development Toolkit</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23030312'/%3E%3Crect x='2' y='2' width='60' height='60' rx='13' fill='none' stroke='%2300d4ff' stroke-width='1.5' opacity='0.55'/%3E%3Ctext x='32' y='44' font-size='32' font-family='Cascadia Mono,Consolas,monospace' font-weight='800' text-anchor='middle' fill='%2300d4ff'%3EA%3C/text%3E%3C/svg%3E">
@@ -48,6 +48,18 @@
                 var(--bg);
             min-height: 100vh;
         }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(150, 190, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(150, 190, 255, 0.022) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.80), transparent 72%);
+            opacity: 0.55;
+        }
 
         a { color: var(--cyan); text-decoration: none; transition: color 120ms ease; }
         a:hover { color: var(--white); }
@@ -59,6 +71,7 @@
         }
 
         .container {
+            position: relative;
             max-width: 1280px;
             margin: 0 auto;
             padding: 1.5rem 1.75rem 4rem;
@@ -119,11 +132,35 @@
 
         /* Hero */
         header.hero {
-            text-align: center;
-            padding: 3rem 0 2.5rem;
+            position: relative;
+            display: grid;
+            grid-template-columns: minmax(0, 0.95fr) minmax(360px, 0.85fr);
+            gap: 26px;
+            align-items: stretch;
+            padding: 2.4rem 0 2.2rem;
+        }
+        header.hero::before {
+            content: "";
+            position: absolute;
+            inset: 1.4rem 22% auto 0;
+            height: 360px;
+            border-radius: 28px;
+            background:
+                radial-gradient(circle at 24% 34%, rgba(0, 212, 255, 0.16), transparent 42%),
+                radial-gradient(circle at 70% 20%, rgba(168, 85, 247, 0.12), transparent 42%);
+            filter: blur(8px);
+            opacity: 0.9;
+            z-index: -1;
+        }
+        .hero-copy {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 28px 0 28px;
         }
         .hero-eyebrow {
             display: inline-block;
+            width: fit-content;
             font-family: var(--mono);
             font-size: 0.72rem;
             text-transform: uppercase;
@@ -136,11 +173,12 @@
             margin-bottom: 1.25rem;
         }
         .hero h1 {
-            font-size: clamp(2.25rem, 5vw, 3.5rem);
+            font-size: clamp(2.45rem, 5.3vw, 5.1rem);
             font-weight: 800;
-            letter-spacing: -0.03em;
+            letter-spacing: -0.055em;
             color: var(--white);
-            margin-bottom: 0.75rem;
+            line-height: 0.95;
+            margin-bottom: 1.1rem;
             text-shadow: 0 0 60px rgba(0, 212, 255, 0.18);
         }
         .hero .gradient {
@@ -150,16 +188,16 @@
             color: transparent;
         }
         .hero p.lead {
-            font-size: 1.1rem;
+            font-size: 1.08rem;
             color: var(--muted);
-            max-width: 640px;
-            margin: 0 auto;
+            max-width: 670px;
+            margin: 0;
         }
         .hero .cta-row {
-            margin-top: 1.75rem;
+            margin-top: 1.45rem;
             display: flex;
             gap: 12px;
-            justify-content: center;
+            justify-content: flex-start;
             flex-wrap: wrap;
         }
 
@@ -201,14 +239,252 @@
             border-color: rgba(34, 197, 94, 0.85);
         }
 
+        .hero-meta {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 1.35rem;
+            max-width: 640px;
+        }
+        .meta-card {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            background: rgba(8, 10, 31, 0.58);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
+            padding: 12px 13px;
+        }
+        .meta-card strong {
+            display: block;
+            color: var(--white);
+            font-family: var(--mono);
+            font-size: 1.15rem;
+            line-height: 1.1;
+        }
+        .meta-card span {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        .hero-console {
+            position: relative;
+            align-self: center;
+            min-height: 440px;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            background:
+                linear-gradient(180deg, rgba(0, 212, 255, 0.08), transparent 42%),
+                rgba(5, 7, 24, 0.82);
+            box-shadow:
+                0 28px 70px rgba(0, 0, 0, 0.46),
+                0 0 0 1px rgba(255, 255, 255, 0.045) inset;
+            backdrop-filter: blur(18px);
+            overflow: hidden;
+        }
+        .hero-console::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), var(--violet), transparent);
+            opacity: 0.75;
+        }
+        .hero-console::after {
+            content: "";
+            position: absolute;
+            inset: auto -12% -24% 32%;
+            height: 230px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.18), transparent 68%);
+            pointer-events: none;
+        }
+        .console-top {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.18);
+        }
+        .window-dots {
+            display: flex;
+            gap: 6px;
+        }
+        .window-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.24);
+        }
+        .window-dot.cyan { background: var(--cyan); box-shadow: 0 0 12px rgba(0, 212, 255, 0.65); }
+        .window-dot.green { background: var(--green); }
+        .window-dot.violet { background: var(--violet); }
+        .console-title {
+            color: #d9e8ff;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .status-pill {
+            margin-left: auto;
+            border: 1px solid rgba(34, 197, 94, 0.30);
+            border-radius: 999px;
+            color: #bfffd8;
+            background: rgba(34, 197, 94, 0.09);
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            font-weight: 800;
+            letter-spacing: 0.10em;
+            padding: 4px 8px;
+            text-transform: uppercase;
+        }
+        .console-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            padding: 16px;
+        }
+        .console-card {
+            min-height: 128px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02)),
+                rgba(0, 0, 0, 0.18);
+            padding: 14px;
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+        }
+        .console-card.wide { grid-column: span 2; }
+        .card-label {
+            margin-bottom: 10px;
+            color: var(--cyan);
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+        .signal-row {
+            display: grid;
+            grid-template-columns: 104px 1fr 42px;
+            align-items: center;
+            gap: 9px;
+            margin: 8px 0;
+            color: #d6e4ff;
+            font-size: 0.78rem;
+        }
+        .signal-row b {
+            color: var(--green);
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            text-align: right;
+            text-transform: uppercase;
+        }
+        .signal-row b.warn { color: var(--gold); }
+        .signal-row b.score { color: var(--cyan); }
+        .signal-bar {
+            height: 7px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.07);
+        }
+        .signal-fill {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--cyan), var(--blue));
+        }
+        .signal-fill.v88 { width: 88%; }
+        .signal-fill.v81 { width: 81%; }
+        .signal-fill.v74 { width: 74%; }
+        .signal-fill.v69 { width: 69%; }
+        .queue-list {
+            display: grid;
+            gap: 8px;
+            color: #d6e4ff;
+            font-size: 0.78rem;
+        }
+        .queue-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .queue-item:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+        .queue-tag {
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 2px 7px;
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: 0.62rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .queue-tag.green { color: #bfffd8; border-color: rgba(34, 197, 94, 0.30); background: rgba(34, 197, 94, 0.08); }
+        .queue-tag.gold { color: #ffe4ad; border-color: rgba(245, 158, 11, 0.32); background: rgba(245, 158, 11, 0.08); }
+        .command-line {
+            display: block;
+            margin-top: 8px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            background: rgba(0, 0, 0, 0.28);
+            color: #d9f8ff;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            line-height: 1.5;
+        }
+        .mini-tile-map {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+        .map-cell {
+            min-height: 54px;
+            border-radius: 10px;
+            border: 1px solid color-mix(in srgb, var(--accent) 32%, rgba(255, 255, 255, 0.10));
+            background:
+                linear-gradient(180deg, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+                rgba(255, 255, 255, 0.035);
+            padding: 8px;
+            color: #e8f2ff;
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+        }
+        .map-cell span {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-family: var(--font);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .map-cell.cyan { --accent: var(--cyan); }
+        .map-cell.gold { --accent: var(--gold); }
+        .map-cell.blue { --accent: var(--blue); }
+        .map-cell.violet { --accent: var(--violet); }
+
         /* Tech badges */
         .tech-stack {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            justify-content: center;
-            margin: 0 auto 2.5rem;
-            max-width: 800px;
+            margin-top: 10px;
         }
         .tech-badge {
             padding: 5px 12px;
@@ -219,6 +495,162 @@
             font-family: var(--mono);
             font-size: 0.78rem;
             font-weight: 600;
+        }
+        .platform-strip {
+            margin-top: 1.5rem;
+        }
+        .stack-label {
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        /* FlipCard schema surfaces */
+        .flip-card {
+            position: relative;
+            perspective: 1200px;
+            cursor: pointer;
+            outline: none;
+        }
+        .flip-card:focus-visible {
+            outline: 2px solid var(--cyan);
+            outline-offset: 3px;
+            border-radius: var(--radius);
+        }
+        .flip-card.s2 { grid-column: span 4; }
+        .flip-card.s4 { grid-column: span 4; }
+        .flip-card.s6 { grid-column: span 6; }
+        .flip-card.s8 { grid-column: span 8; }
+        .flip-card.s12 { grid-column: span 12; }
+        .flip-card.wide { grid-column: span 2; }
+        .flip-card.callout-flip { margin-top: 2rem; }
+        .flip-inner {
+            position: relative;
+            width: 100%;
+            min-height: 120px;
+            transform-style: preserve-3d;
+            transition: transform 360ms ease;
+        }
+        .flip-card[aria-pressed="true"] .flip-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-front,
+        .flip-back {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            min-height: 100%;
+            backface-visibility: hidden;
+            border-radius: inherit;
+            overflow: hidden;
+        }
+        .flip-front {
+            z-index: 2;
+        }
+        .flip-front::after {
+            content: "Schema";
+            position: absolute;
+            right: 12px;
+            bottom: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.24);
+            border-radius: 999px;
+            background: rgba(3, 5, 18, 0.82);
+            color: #bfeaff;
+            font-family: var(--mono);
+            font-size: 0.58rem;
+            font-weight: 800;
+            letter-spacing: 0.10em;
+            padding: 2px 7px;
+            text-transform: uppercase;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 120ms ease;
+        }
+        .flip-card:hover .flip-front::after,
+        .flip-card:focus-visible .flip-front::after {
+            opacity: 1;
+        }
+        .flip-back {
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            transform: rotateY(180deg);
+            border: 1px solid rgba(0, 212, 255, 0.20);
+            background:
+                linear-gradient(180deg, rgba(0, 212, 255, 0.10), transparent 38%),
+                rgba(0, 0, 0, 0.78);
+            box-shadow:
+                0 18px 46px rgba(0, 0, 0, 0.46),
+                0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+        }
+        .flip-back-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.035);
+        }
+        .flip-back-title {
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .copy-schema {
+            flex: 0 0 auto;
+            border: 1px solid rgba(0, 212, 255, 0.28);
+            border-radius: 7px;
+            background: rgba(0, 212, 255, 0.08);
+            color: #c9f5ff;
+            cursor: pointer;
+            font-family: var(--mono);
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            padding: 4px 8px;
+            text-transform: uppercase;
+        }
+        .copy-schema:hover,
+        .copy-schema:focus-visible {
+            background: rgba(0, 212, 255, 0.16);
+            color: var(--white);
+        }
+        .flip-back-body {
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+            padding: 12px;
+        }
+        .flip-back-body pre {
+            margin: 0;
+            color: #86efac;
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .flip-front > .meta-card,
+        .flip-front > .console-card,
+        .flip-front > .kpi,
+        .flip-front > .tile,
+        .flip-front > .doc-panel,
+        .flip-front > .callout {
+            height: 100%;
+            width: 100%;
+        }
+        .flip-front > .callout {
+            margin-top: 0;
         }
 
         /* Section heading */
@@ -245,7 +677,7 @@
             font-size: 0.98rem;
         }
 
-        /* Live tile grid (Bento layout) */
+        /* Live tile grid */
         .tile-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
@@ -332,7 +764,6 @@
             font-weight: 700;
             color: color-mix(in srgb, var(--accent) 75%, white);
         }
-        .tile-link::after { content: " ->"; opacity: 0.7; }
         .tile-link:hover { color: var(--white); }
 
         /* Tile color variants */
@@ -345,7 +776,7 @@
         .tile.teal   { --accent: var(--teal); }
         .tile.red    { --accent: var(--red); }
 
-        /* Tile sizes (Bento) */
+        /* Tile sizes */
         .tile.s2 { grid-column: span 4; }
         .tile.s4 { grid-column: span 4; }
         .tile.s6 { grid-column: span 6; }
@@ -476,15 +907,37 @@
         }
 
         /* Responsive */
+        @media (max-width: 1040px) {
+            header.hero {
+                grid-template-columns: 1fr;
+                padding-top: 1.8rem;
+            }
+            header.hero::before {
+                inset: 1rem 0 auto 0;
+            }
+            .hero-console {
+                min-height: 0;
+            }
+        }
         @media (max-width: 900px) {
-            .tile.s2, .tile.s4, .tile.s6, .tile.s8 { grid-column: span 6; }
+            .tile.s2, .tile.s4, .tile.s6, .tile.s8,
+            .flip-card.s2, .flip-card.s4, .flip-card.s6, .flip-card.s8 { grid-column: span 6; }
             .kpi-strip { grid-template-columns: repeat(2, 1fr); }
             nav.floating-header { flex-wrap: wrap; }
             nav.floating-header .links { width: 100%; justify-content: center; }
         }
         @media (max-width: 560px) {
-            .tile { grid-column: span 12 !important; }
+            .tile,
+            .flip-card { grid-column: span 12 !important; }
             .kpi-strip { grid-template-columns: 1fr 1fr; }
+            .hero h1 { font-size: clamp(2.35rem, 14vw, 3.9rem); }
+            .hero-meta { grid-template-columns: 1fr; }
+            .console-grid { grid-template-columns: 1fr; }
+            .console-card.wide,
+            .flip-card.wide { grid-column: span 1 !important; }
+            .signal-row { grid-template-columns: 1fr; align-items: start; }
+            .signal-row b { text-align: left; }
+            .mini-tile-map { grid-template-columns: 1fr; }
             .container { padding: 1rem 1rem 3rem; }
         }
     </style>
@@ -504,33 +957,117 @@
         </nav>
 
         <header class="hero">
-            <span class="hero-eyebrow">Microsoft Copilot Studio Toolkit</span>
-            <h1>Build, govern, and test<br><span class="gradient">custom agents at scale</span></h1>
-            <p class="lead">
-                A comprehensive set of capabilities that empowers makers with AI-powered testing,
-                compliance management, performance analytics, and prompt engineering for Microsoft Copilot Studio.
-            </p>
-            <div class="cta-row">
-                <a href="https://github.com/dayour/Agent-Studio-Kit" class="btn btn-primary">View on GitHub</a>
-                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/QUICKSTART.md" class="btn btn-success">Quickstart</a>
-                <a href="https://github.com/dayour/Agent-Studio-Kit/releases" class="btn">Releases</a>
+            <div class="hero-copy">
+                <span class="hero-eyebrow">Power Platform operating kit</span>
+                <h1>Turn Copilot Studio agents into <span class="gradient">managed products</span>.</h1>
+                <p class="lead">
+                    Agent Studio Kit gives maker teams a governed workbench for tests, compliance reviews,
+                    prompt refinement, conversation KPIs, and deployment handoffs across Microsoft Copilot Studio.
+                    Each surface flips to a copyable Adaptive Card schema for agent-to-agent sharing.
+                </p>
+
+                <div class="hero-meta" aria-label="Agent Studio Kit highlights">
+                    <div class="meta-card">
+                        <strong>4</strong>
+                        <span>test modes for agent quality gates</span>
+                    </div>
+                    <div class="meta-card">
+                        <strong>30+</strong>
+                        <span>implementation and operations guides</span>
+                    </div>
+                    <div class="meta-card">
+                        <strong>M365</strong>
+                        <span>tenant-scale governance surface</span>
+                    </div>
+                </div>
+
+                <div class="cta-row">
+                    <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/QUICKSTART.md" class="btn btn-primary">Start with quickstart</a>
+                    <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/TESTING_CAPABILITIES.md" class="btn btn-success">Explore test modes</a>
+                    <a href="https://github.com/dayour/Agent-Studio-Kit" class="btn">Review source</a>
+                </div>
+
+                <div class="platform-strip">
+                    <span class="stack-label">Connected surfaces</span>
+                    <div class="tech-stack">
+                        <span class="tech-badge">Copilot Studio</span>
+                        <span class="tech-badge">Power Platform</span>
+                        <span class="tech-badge">PAC CLI</span>
+                        <span class="tech-badge">Dataverse MCP</span>
+                        <span class="tech-badge">AI Builder</span>
+                        <span class="tech-badge">Power Automate</span>
+                        <span class="tech-badge">Azure OpenAI</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="tech-stack" style="margin-top: 2rem;">
-                <span class="tech-badge">Copilot Studio</span>
-                <span class="tech-badge">Power Platform</span>
-                <span class="tech-badge">PAC CLI</span>
-                <span class="tech-badge">Dataverse MCP</span>
-                <span class="tech-badge">AI Builder</span>
-                <span class="tech-badge">Power Automate</span>
-                <span class="tech-badge">Azure OpenAI</span>
-            </div>
+            <aside class="hero-console" aria-label="Agent Studio Kit command surface">
+                <div class="console-top">
+                    <div class="window-dots" aria-hidden="true">
+                        <span class="window-dot cyan"></span>
+                        <span class="window-dot green"></span>
+                        <span class="window-dot violet"></span>
+                    </div>
+                    <div class="console-title">Agent Studio Kit command surface</div>
+                    <span class="status-pill">Ready</span>
+                </div>
+
+                <div class="console-grid">
+                    <div class="console-card wide">
+                        <div class="card-label">Test matrix</div>
+                        <div class="signal-row">
+                            <span>Response match</span>
+                            <div class="signal-bar"><span class="signal-fill v88"></span></div>
+                            <b>Pass</b>
+                        </div>
+                        <div class="signal-row">
+                            <span>Topic match</span>
+                            <div class="signal-bar"><span class="signal-fill v81"></span></div>
+                            <b>Pass</b>
+                        </div>
+                        <div class="signal-row">
+                            <span>Multi-turn</span>
+                            <div class="signal-bar"><span class="signal-fill v74"></span></div>
+                            <b class="warn">Review</b>
+                        </div>
+                        <div class="signal-row">
+                            <span>Generative answer</span>
+                            <div class="signal-bar"><span class="signal-fill v69"></span></div>
+                            <b class="score">Score</b>
+                        </div>
+                    </div>
+
+                    <div class="console-card">
+                        <div class="card-label">Governance queue</div>
+                        <div class="queue-list">
+                            <div class="queue-item"><span>Authentication policy</span><span class="queue-tag green">Clear</span></div>
+                            <div class="queue-item"><span>Knowledge freshness</span><span class="queue-tag gold">SLA</span></div>
+                            <div class="queue-item"><span>Telemetry coverage</span><span class="queue-tag green">On</span></div>
+                        </div>
+                    </div>
+
+                    <div class="console-card">
+                        <div class="card-label">Pipeline handoff</div>
+                        <span class="command-line">pac solution import --path AgentStudioKit.zip<br>run tests --suite regression</span>
+                    </div>
+
+                    <div class="console-card wide">
+                        <div class="card-label">Live tile map</div>
+                        <div class="mini-tile-map">
+                            <div class="map-cell cyan">Tests<span>quality gates</span></div>
+                            <div class="map-cell gold">Compliance<span>policy cases</span></div>
+                            <div class="map-cell blue">KPIs<span>Dataverse rollups</span></div>
+                            <div class="map-cell violet">Prompts<span>advisor loop</span></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
         </header>
 
         <section id="metrics" class="section">
-            <div class="section-eyebrow">Capabilities Snapshot</div>
-            <h2>What you get out of the box</h2>
-            <p class="section-sub">Production-grade tooling spanning the full agent lifecycle.</p>
+            <div class="section-eyebrow">Operating model</div>
+            <h2>Built around the agent lifecycle</h2>
+            <p class="section-sub">Testing, governance, telemetry, and authoring loops are visible as connected surfaces.</p>
 
             <div class="kpi-strip">
                 <div class="kpi">
@@ -557,9 +1094,9 @@
         </section>
 
         <section id="features" class="section">
-            <div class="section-eyebrow">Feature Tiles</div>
-            <h2>Live capabilities</h2>
-            <p class="section-sub">Bento layout. Click any tile to jump to its documentation.</p>
+            <div class="section-eyebrow">Lifecycle tiles</div>
+            <h2>Mapped to real implementation work</h2>
+            <p class="section-sub">Each tile maps to a kit module and the guide that explains how to run it.</p>
 
             <div class="tile-grid">
                 <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/TESTING_CAPABILITIES.md" class="tile cyan s6">
@@ -816,20 +1353,375 @@
         <section id="start" class="callout">
             <h3>Power Platform Integration</h3>
             <p>
-                Agent Studio Kit seamlessly integrates with the Microsoft Power Platform ecosystem.
-                Use the <strong>PAC CLI</strong> (Power Platform CLI) to manage deployments, and leverage
-                <strong>Dataverse MCP</strong> (Model Context Protocol) for advanced data operations and agent management.
-                The kit supports automated testing through Power Platform Pipelines, ensuring quality gates in your deployment lifecycle.
+                Agent Studio Kit is designed for the Power Platform operating model. Use the
+                <strong>PAC CLI</strong> to package and move solutions, connect <strong>Dataverse MCP</strong>
+                for agent metadata and test data operations, and wire automated tests into Power Platform Pipelines
+                so quality gates travel with each deployment.
             </p>
         </section>
 
         <footer>
-            <p>&copy; 2026 Agent Studio Kit. Built for Microsoft Copilot Studio.</p>
+            <p>Copyright 2026 Agent Studio Kit. Built for Microsoft Copilot Studio.</p>
             <p class="footer-mono">
                 Fork of <a href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit">Power CAT Copilot Studio Kit</a>
-                &middot; <a href="https://github.com/dayour/Agent-Studio-Kit">github.com/dayour/Agent-Studio-Kit</a>
+                | <a href="https://github.com/dayour/Agent-Studio-Kit">github.com/dayour/Agent-Studio-Kit</a>
             </p>
         </footer>
     </div>
+    <script>
+        (() => {
+            const ADAPTIVE_CARD_SCHEMA = "http://adaptivecards.io/schemas/adaptive-card.json";
+            const ADAPTIVE_CARD_VERSION = "1.5";
+            const PAGE_SOURCE = "Agent Studio Kit GitHub Pages";
+            const SHARE_INTENT = "agent-to-agent";
+            const SELECTORS = [
+                { selector: ".meta-card", type: "heroMetric", minHeight: 104 },
+                { selector: ".console-card", type: "commandSurface", minHeight: 128 },
+                { selector: ".kpi", type: "lifecycleMetric", minHeight: 130 },
+                { selector: ".tile", type: "moduleTile", minHeight: 180 },
+                { selector: ".doc-panel", type: "documentationGroup", minHeight: 270 },
+                { selector: ".callout", type: "integrationPattern", minHeight: 180 },
+            ];
+
+            const text = (root, selector) => {
+                const node = root.querySelector(selector);
+                return node ? node.textContent.replace(/\s+/g, " ").trim() : "";
+            };
+
+            const ownText = (node) => node ? node.textContent.replace(/\s+/g, " ").trim() : "";
+
+            const slug = (value) => value
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "")
+                .slice(0, 64) || "surface";
+
+            const factsFromEntries = (entries) => entries
+                .filter((entry) => entry.value)
+                .map((entry) => ({ title: entry.title, value: String(entry.value) }));
+
+            const linksFrom = (surface) => Array.from(surface.querySelectorAll("a[href]"))
+                .map((link) => ({
+                    label: ownText(link),
+                    url: link.href,
+                }))
+                .filter((link) => link.label && link.url);
+
+            const fieldFromRows = (surface, selector, mapper) => Array.from(surface.querySelectorAll(selector)).map(mapper);
+
+            function componentSummary(surface, config) {
+                if (config.type === "heroMetric") {
+                    return {
+                        title: "Hero metric: " + text(surface, "strong"),
+                        subtitle: text(surface, "span"),
+                        value: text(surface, "strong"),
+                        category: "Hero summary",
+                        facts: factsFromEntries([
+                            { title: "Value", value: text(surface, "strong") },
+                            { title: "Meaning", value: text(surface, "span") },
+                        ]),
+                    };
+                }
+
+                if (config.type === "commandSurface") {
+                    const title = text(surface, ".card-label") || "Command surface";
+                    const signals = fieldFromRows(surface, ".signal-row", (row) => ({
+                        name: ownText(row.querySelector("span")),
+                        status: ownText(row.querySelector("b")),
+                    })).filter((signal) => signal.name);
+                    const queue = fieldFromRows(surface, ".queue-item", (row) => ({
+                        name: ownText(row.querySelector("span")),
+                        state: ownText(row.querySelector(".queue-tag")),
+                    })).filter((item) => item.name);
+                    const map = fieldFromRows(surface, ".map-cell", (cell) => ({
+                        name: Array.from(cell.childNodes)
+                            .filter((node) => node.nodeType === Node.TEXT_NODE)
+                            .map((node) => node.textContent.trim())
+                            .join(" ")
+                            .trim(),
+                        detail: ownText(cell.querySelector("span")),
+                    })).filter((item) => item.name);
+                    const command = text(surface, ".command-line");
+
+                    return {
+                        title,
+                        subtitle: command || queue.map((item) => item.name + ": " + item.state).join(", ") || signals.map((item) => item.name + ": " + item.status).join(", ") || map.map((item) => item.name + ": " + item.detail).join(", "),
+                        category: "Command surface",
+                        facts: factsFromEntries([
+                            { title: "Component", value: title },
+                            { title: "Command", value: command },
+                            { title: "Signals", value: signals.map((item) => item.name + ": " + item.status).join("; ") },
+                            { title: "Queue", value: queue.map((item) => item.name + ": " + item.state).join("; ") },
+                            { title: "Map", value: map.map((item) => item.name + ": " + item.detail).join("; ") },
+                        ]),
+                        data: { signals, queue, map, command },
+                    };
+                }
+
+                if (config.type === "lifecycleMetric") {
+                    return {
+                        title: text(surface, ".kpi-label") || "Lifecycle metric",
+                        subtitle: text(surface, ".kpi-sub"),
+                        value: text(surface, ".kpi-value"),
+                        category: "Operating model",
+                        facts: factsFromEntries([
+                            { title: "Metric", value: text(surface, ".kpi-label") },
+                            { title: "Value", value: text(surface, ".kpi-value") },
+                            { title: "Meaning", value: text(surface, ".kpi-sub") },
+                        ]),
+                    };
+                }
+
+                if (config.type === "moduleTile") {
+                    const href = surface.dataset.sourceUrl || surface.href || "";
+                    return {
+                        title: text(surface, ".tile-title") || "Feature module",
+                        subtitle: text(surface, ".tile-desc"),
+                        category: text(surface, ".mono") || "module",
+                        href,
+                        facts: factsFromEntries([
+                            { title: "Module", value: text(surface, ".tile-title") },
+                            { title: "Capability", value: text(surface, ".tile-desc") },
+                            { title: "Category", value: text(surface, ".mono") },
+                            { title: "Tile type", value: text(surface, ".tile-kind") },
+                            { title: "Canvas size", value: text(surface, ".tile-bd") },
+                            { title: "Guide", value: href },
+                        ]),
+                    };
+                }
+
+                if (config.type === "documentationGroup") {
+                    const links = linksFrom(surface);
+                    return {
+                        title: text(surface, "h4") || "Documentation group",
+                        subtitle: links.map((link) => link.label).join(", "),
+                        category: "Documentation",
+                        href: links[0] ? links[0].url : "",
+                        facts: factsFromEntries([
+                            { title: "Group", value: text(surface, "h4") },
+                            { title: "Documents", value: links.map((link) => link.label).join(", ") },
+                            { title: "Document count", value: links.length },
+                        ]),
+                        data: { links },
+                    };
+                }
+
+                return {
+                    title: text(surface, "h3") || "Integration pattern",
+                    subtitle: text(surface, "p"),
+                    category: "Integration",
+                    facts: factsFromEntries([
+                        { title: "Pattern", value: text(surface, "h3") },
+                        { title: "Description", value: text(surface, "p") },
+                    ]),
+                };
+            }
+
+            function adaptiveCardFor(surface, config, id) {
+                const summary = componentSummary(surface, config);
+                const body = [
+                    {
+                        type: "Container",
+                        style: "emphasis",
+                        bleed: true,
+                        items: [
+                            { type: "TextBlock", text: summary.category || config.type, size: "Small", weight: "Bolder", color: "Accent", spacing: "None" },
+                            { type: "TextBlock", text: summary.title, size: "Large", weight: "Bolder", wrap: true, spacing: "Small" },
+                            { type: "TextBlock", text: summary.subtitle || "Schema-backed share surface", wrap: true, isSubtle: true, spacing: "Small" },
+                        ],
+                    },
+                    {
+                        type: "FactSet",
+                        spacing: "Medium",
+                        facts: summary.facts.length ? summary.facts : factsFromEntries([
+                            { title: "Component", value: summary.title },
+                            { title: "Source", value: PAGE_SOURCE },
+                        ]),
+                    },
+                ];
+
+                if (summary.value) {
+                    body.splice(1, 0, {
+                        type: "TextBlock",
+                        text: String(summary.value),
+                        size: "ExtraLarge",
+                        weight: "Bolder",
+                        color: "Accent",
+                        spacing: "Medium",
+                    });
+                }
+
+                return {
+                    $schema: ADAPTIVE_CARD_SCHEMA,
+                    type: "AdaptiveCard",
+                    version: ADAPTIVE_CARD_VERSION,
+                    metadata: {
+                        componentId: id,
+                        componentType: config.type,
+                        source: PAGE_SOURCE,
+                        shareIntent: SHARE_INTENT,
+                        generatedAt: new Date().toISOString(),
+                        data: summary.data || {},
+                    },
+                    body,
+                    actions: summary.href ? [
+                        { type: "Action.OpenUrl", title: "Open source", url: summary.href },
+                    ] : [],
+                };
+            }
+
+            function copyToClipboard(value, button) {
+                const done = () => {
+                    const original = button.textContent;
+                    button.textContent = "Copied";
+                    window.setTimeout(() => { button.textContent = original; }, 1200);
+                };
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(value).then(done).catch(() => fallbackCopy(value, done));
+                } else {
+                    fallbackCopy(value, done);
+                }
+            }
+
+            function fallbackCopy(value, done) {
+                const textarea = document.createElement("textarea");
+                textarea.value = value;
+                textarea.setAttribute("readonly", "readonly");
+                textarea.style.position = "fixed";
+                textarea.style.left = "-9999px";
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                textarea.remove();
+                done();
+            }
+
+            function makeOpenLink(surface, href) {
+                if (!href) return surface;
+
+                let target = surface;
+                if (surface.tagName.toLowerCase() === "a") {
+                    target = document.createElement("div");
+                    Array.from(surface.attributes).forEach((attribute) => {
+                        if (attribute.name !== "href") target.setAttribute(attribute.name, attribute.value);
+                    });
+                    while (surface.firstChild) target.appendChild(surface.firstChild);
+                    surface.replaceWith(target);
+                }
+
+                target.dataset.sourceUrl = href;
+                target.setAttribute("role", "group");
+
+                const openLabel = target.querySelector(".tile-link");
+                if (!openLabel || openLabel.tagName.toLowerCase() === "a") return target;
+
+                const openLink = document.createElement("a");
+                openLink.className = openLabel.className;
+                openLink.href = href;
+                openLink.textContent = openLabel.textContent || "Open";
+                openLabel.replaceWith(openLink);
+                return target;
+            }
+
+            function syncHeight(card, front, inner, minHeight) {
+                const measure = () => {
+                    const current = Math.ceil(front.scrollHeight || front.getBoundingClientRect().height || minHeight);
+                    inner.style.minHeight = Math.max(minHeight, current) + "px";
+                };
+                measure();
+                window.requestAnimationFrame(measure);
+                window.addEventListener("resize", measure, { passive: true });
+            }
+
+            function wrapSurface(surface, config, index) {
+                if (surface.closest(".flip-card")) return;
+
+                const href = surface.tagName.toLowerCase() === "a" ? surface.href : "";
+                surface = makeOpenLink(surface, href);
+
+                const titleProbe = text(surface, ".tile-title") || text(surface, ".card-label") || text(surface, ".kpi-label") || text(surface, "h4") || text(surface, "h3") || text(surface, "strong") || config.type;
+                const id = "ask-" + config.type + "-" + slug(titleProbe) + "-" + String(index + 1).padStart(2, "0");
+                const schema = adaptiveCardFor(surface, config, id);
+                const schemaJson = JSON.stringify(schema, null, 2);
+
+                const card = document.createElement("div");
+                card.className = "flip-card " + config.type + "-flip";
+                card.id = id;
+                card.tabIndex = 0;
+                card.setAttribute("role", "button");
+                card.setAttribute("aria-pressed", "false");
+                card.setAttribute("aria-label", titleProbe + " schema flipcard");
+
+                ["s2", "s4", "s6", "s8", "s12", "wide", "cyan", "blue", "gold", "green", "violet", "pink", "teal", "red"].forEach((className) => {
+                    if (surface.classList.contains(className)) card.classList.add(className);
+                });
+                if (surface.classList.contains("callout")) card.classList.add("callout-flip");
+
+                const inner = document.createElement("div");
+                inner.className = "flip-inner";
+
+                const front = document.createElement("div");
+                front.className = "flip-front";
+
+                const back = document.createElement("div");
+                back.className = "flip-back";
+                const backHeader = document.createElement("div");
+                backHeader.className = "flip-back-header";
+                const backTitle = document.createElement("span");
+                backTitle.className = "flip-back-title";
+                backTitle.textContent = titleProbe;
+                const copyButton = document.createElement("button");
+                copyButton.className = "copy-schema";
+                copyButton.type = "button";
+                copyButton.textContent = "Copy JSON";
+                backHeader.appendChild(backTitle);
+                backHeader.appendChild(copyButton);
+
+                const backBody = document.createElement("div");
+                backBody.className = "flip-back-body";
+                const schemaPre = document.createElement("pre");
+                schemaPre.textContent = schemaJson;
+                backBody.appendChild(schemaPre);
+                back.appendChild(backHeader);
+                back.appendChild(backBody);
+
+                surface.parentNode.insertBefore(card, surface);
+                front.appendChild(surface);
+                inner.appendChild(front);
+                inner.appendChild(back);
+                card.appendChild(inner);
+
+                const minHeight = config.minHeight || 120;
+                syncHeight(card, front, inner, minHeight);
+
+                card.addEventListener("click", (event) => {
+                    if (event.target.closest("a, button")) return;
+                    card.setAttribute("aria-pressed", card.getAttribute("aria-pressed") === "true" ? "false" : "true");
+                });
+                card.addEventListener("keydown", (event) => {
+                    if (event.key !== "Enter" && event.key !== " ") return;
+                    event.preventDefault();
+                    card.setAttribute("aria-pressed", card.getAttribute("aria-pressed") === "true" ? "false" : "true");
+                });
+                copyButton.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    copyToClipboard(schemaJson, event.currentTarget);
+                });
+            }
+
+            function initFlipCards() {
+                SELECTORS.forEach((config) => {
+                    Array.from(document.querySelectorAll(config.selector)).forEach((surface, index) => wrapSurface(surface, config, index));
+                });
+            }
+
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", initFlipCards);
+            } else {
+                initFlipCards();
+            }
+        })();
+    </script>
 </body>
 </html>
