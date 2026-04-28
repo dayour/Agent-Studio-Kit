@@ -1,176 +1,523 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Agent Studio Kit - A comprehensive toolkit for Microsoft Copilot Studio development, governance, and testing">
-    <title>Agent Studio Kit - Microsoft Copilot Studio Development Toolkit</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23667eea'/%3E%3Ctext x='32' y='44' font-size='36' font-family='Segoe UI,sans-serif' font-weight='700' text-anchor='middle' fill='white'%3EA%3C/text%3E%3C/svg%3E">
+    <meta name="theme-color" content="#030312">
+    <title>Agent Studio Kit | Microsoft Copilot Studio Development Toolkit</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23030312'/%3E%3Crect x='2' y='2' width='60' height='60' rx='13' fill='none' stroke='%2300d4ff' stroke-width='1.5' opacity='0.55'/%3E%3Ctext x='32' y='44' font-size='32' font-family='Cascadia Mono,Consolas,monospace' font-weight='800' text-anchor='middle' fill='%2300d4ff'%3EA%3C/text%3E%3C/svg%3E">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            color-scheme: dark;
+            --bg: #030312;
+            --surface: rgba(8, 10, 31, 0.88);
+            --surface-strong: rgba(12, 15, 42, 0.96);
+            --text: #e8f2ff;
+            --muted: #8fa4c8;
+            --line: rgba(150, 190, 255, 0.18);
+            --cyan: #00d4ff;
+            --blue: #3b82f6;
+            --gold: #f59e0b;
+            --green: #22c55e;
+            --violet: #a855f7;
+            --red: #ef4444;
+            --pink: #ec4899;
+            --teal: #14b8a6;
+            --white: #f8fafc;
+            --radius: 14px;
+            --font: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            --mono: "Cascadia Mono", "Consolas", "SF Mono", monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.55;
+            min-height: 100%;
+        }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: #1f2937;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background:
+                radial-gradient(circle at 20% 18%, rgba(0, 140, 200, 0.12), transparent 42%),
+                radial-gradient(circle at 80% 80%, rgba(40, 90, 180, 0.10), transparent 44%),
+                radial-gradient(circle at 50% 110%, rgba(168, 85, 247, 0.08), transparent 50%),
+                var(--bg);
             min-height: 100vh;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        a { color: var(--cyan); text-decoration: none; transition: color 120ms ease; }
+        a:hover { color: var(--white); }
 
-        nav {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(8px);
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            margin-bottom: 1rem;
+        code, .mono {
+            font-family: var(--mono);
+            color: #bfeaff;
+            font-size: 0.92em;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem 1.75rem 4rem;
+        }
+
+        /* Floating header */
+        nav.floating-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 16px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 16px;
+            background: rgba(3, 5, 18, 0.72);
+            backdrop-filter: blur(16px);
+            position: sticky;
+            top: 12px;
+            z-index: 100;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--mono);
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.01em;
+        }
+        .brand-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            background: var(--cyan);
+            box-shadow: 0 0 12px var(--cyan);
+        }
+
+        nav.floating-header .links {
             display: flex;
             flex-wrap: wrap;
-            gap: 1.25rem;
-            justify-content: center;
-            align-items: center;
+            gap: 4px;
+            margin-left: auto;
         }
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            opacity: 0.9;
-            transition: opacity 0.2s ease;
-        }
-        nav a:hover { opacity: 1; text-decoration: underline; }
-
-        header { text-align: center; color: white; padding: 2.5rem 0; }
-        header h1 { font-size: 3rem; margin-bottom: 0.75rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); letter-spacing: -0.02em; }
-        header p { font-size: 1.25rem; opacity: 0.95; }
-
-        .content {
-            background: white;
-            border-radius: 10px;
-            padding: 3rem;
-            margin: 2rem 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .content h2 { color: #1f2937; margin-bottom: 1rem; }
-        .content h3 { color: #1f2937; }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
-        .feature-card {
-            padding: 1.5rem;
-            background: #f8f9fa;
+        nav.floating-header a.nav-link {
+            color: var(--muted);
+            padding: 6px 12px;
             border-radius: 8px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: background 120ms ease, color 120ms ease;
         }
-        .feature-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
-        .feature-card h3 { color: #4f46e5; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        nav.floating-header a.nav-link:hover {
+            color: var(--white);
+            background: rgba(255, 255, 255, 0.06);
+        }
 
+        /* Hero */
+        header.hero {
+            text-align: center;
+            padding: 3rem 0 2.5rem;
+        }
+        .hero-eyebrow {
+            display: inline-block;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--cyan);
+            padding: 5px 12px;
+            border: 1px solid rgba(0, 212, 255, 0.32);
+            border-radius: 999px;
+            background: rgba(0, 212, 255, 0.06);
+            margin-bottom: 1.25rem;
+        }
+        .hero h1 {
+            font-size: clamp(2.25rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--white);
+            margin-bottom: 0.75rem;
+            text-shadow: 0 0 60px rgba(0, 212, 255, 0.18);
+        }
+        .hero .gradient {
+            background: linear-gradient(135deg, var(--cyan), var(--violet));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .hero p.lead {
+            font-size: 1.1rem;
+            color: var(--muted);
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .hero .cta-row {
+            margin-top: 1.75rem;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text);
+            transition: all 140ms ease;
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.22);
+            color: var(--white);
+            transform: translateY(-1px);
+        }
+        .btn-primary {
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.32), rgba(0, 130, 200, 0.18));
+            border-color: rgba(0, 212, 255, 0.55);
+            color: #d6f7ff;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.45), rgba(0, 150, 220, 0.28));
+            border-color: rgba(0, 212, 255, 0.85);
+        }
+        .btn-success {
+            background: linear-gradient(180deg, rgba(34, 197, 94, 0.30), rgba(15, 130, 70, 0.16));
+            border-color: rgba(34, 197, 94, 0.55);
+            color: #d6ffea;
+        }
+        .btn-success:hover {
+            background: linear-gradient(180deg, rgba(34, 197, 94, 0.42), rgba(15, 150, 80, 0.26));
+            border-color: rgba(34, 197, 94, 0.85);
+        }
+
+        /* Tech badges */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin: 0 auto 2.5rem;
+            max-width: 800px;
+        }
+        .tech-badge {
+            padding: 5px 12px;
+            background: rgba(0, 212, 255, 0.06);
+            border: 1px solid rgba(0, 212, 255, 0.22);
+            color: #bfeaff;
+            border-radius: 999px;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        /* Section heading */
+        .section {
+            margin: 3rem 0 1.25rem;
+        }
+        .section-eyebrow {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+        .section h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--white);
+            margin-bottom: 0.4rem;
+        }
+        .section .section-sub {
+            color: var(--muted);
+            font-size: 0.98rem;
+        }
+
+        /* Live tile grid (Bento layout) */
+        .tile-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 14px;
+            margin-top: 1.5rem;
+        }
+        .tile {
+            --accent: var(--cyan);
+            position: relative;
+            border-radius: var(--radius);
+            border: 1px solid color-mix(in srgb, var(--accent) 30%, rgba(255, 255, 255, 0.08));
+            background:
+                linear-gradient(180deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 42%),
+                var(--surface);
+            box-shadow:
+                0 18px 46px rgba(0, 0, 0, 0.36),
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+            backdrop-filter: blur(16px);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 180px;
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+            overflow: hidden;
+        }
+        .tile::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.6;
+        }
+        .tile:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 28px 64px rgba(0, 0, 0, 0.5),
+                0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent) inset;
+            border-color: color-mix(in srgb, var(--accent) 50%, rgba(255, 255, 255, 0.14));
+        }
+
+        .tile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .tile-kind {
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            text-transform: uppercase;
+            letter-spacing: 0.10em;
+            color: var(--muted);
+        }
+        .tile-bd {
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            color: color-mix(in srgb, var(--accent) 80%, white);
+            opacity: 0.7;
+        }
+        .tile-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.01em;
+        }
+        .tile-desc {
+            font-size: 0.88rem;
+            color: var(--muted);
+            line-height: 1.5;
+            flex: 1;
+        }
+        .tile-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .tile-link {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: color-mix(in srgb, var(--accent) 75%, white);
+        }
+        .tile-link::after { content: " ->"; opacity: 0.7; }
+        .tile-link:hover { color: var(--white); }
+
+        /* Tile color variants */
+        .tile.cyan   { --accent: var(--cyan); }
+        .tile.blue   { --accent: var(--blue); }
+        .tile.gold   { --accent: var(--gold); }
+        .tile.green  { --accent: var(--green); }
+        .tile.violet { --accent: var(--violet); }
+        .tile.pink   { --accent: var(--pink); }
+        .tile.teal   { --accent: var(--teal); }
+        .tile.red    { --accent: var(--red); }
+
+        /* Tile sizes (Bento) */
+        .tile.s2 { grid-column: span 4; }
+        .tile.s4 { grid-column: span 4; }
+        .tile.s6 { grid-column: span 6; }
+        .tile.s8 { grid-column: span 8; }
+        .tile.s12 { grid-column: span 12; }
+
+        /* KPI strip */
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 1.5rem;
+        }
+        .kpi {
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background:
+                linear-gradient(180deg, rgba(0, 212, 255, 0.05), transparent 50%),
+                var(--surface);
+            padding: 16px 18px;
+            backdrop-filter: blur(16px);
+        }
+        .kpi-label {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+        .kpi-value {
+            font-family: var(--mono);
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+        .kpi-sub {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        /* Docs panel */
         .docs-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
+            gap: 14px;
+            margin-top: 1.5rem;
         }
-        .doc-group {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 1.25rem;
-            border-top: 3px solid #667eea;
+        .doc-panel {
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--surface);
+            padding: 18px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 18px 46px rgba(0, 0, 0, 0.30);
+            position: relative;
         }
-        .doc-group h4 {
-            color: #4f46e5;
-            margin-bottom: 0.75rem;
-            font-size: 1rem;
+        .doc-panel::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyan), var(--violet));
+            opacity: 0.5;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+        .doc-panel h4 {
+            font-family: var(--mono);
+            font-size: 0.74rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.14em;
+            color: var(--cyan);
+            margin-bottom: 12px;
         }
-        .doc-group ul { list-style: none; }
-        .doc-group li { margin: 0.4rem 0; }
-        .doc-group a {
-            color: #1f2937;
-            text-decoration: none;
-            font-size: 0.95rem;
+        .doc-panel ul { list-style: none; }
+        .doc-panel li { margin: 6px 0; }
+        .doc-panel a {
+            color: #d6e4ff;
+            font-size: 0.92rem;
             border-bottom: 1px solid transparent;
-            transition: border-color 0.2s ease, color 0.2s ease;
+            transition: color 120ms ease, border-color 120ms ease;
+            font-weight: 500;
         }
-        .doc-group a:hover { color: #4f46e5; border-bottom-color: #4f46e5; }
-
-        .cta { text-align: center; margin: 2.5rem 0 1rem; }
-        .btn {
-            display: inline-block;
-            padding: 0.875rem 1.75rem;
-            margin: 0.5rem;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: background 0.2s ease;
+        .doc-panel a:hover {
+            color: var(--white);
+            border-bottom-color: var(--cyan);
         }
-        .btn:hover { background: #4f46e5; }
-        .btn-secondary { background: #10b981; }
-        .btn-secondary:hover { background: #059669; }
-        .btn-tertiary { background: #475569; }
-        .btn-tertiary:hover { background: #1e293b; }
 
-        .tech-stack { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin: 1rem 0 2rem; }
-        .tech-badge {
-            padding: 0.4rem 0.9rem;
-            background: #eef2ff;
-            color: #4338ca;
-            border: 1px solid #c7d2fe;
-            border-radius: 16px;
+        /* Integration callout */
+        .callout {
+            margin-top: 2rem;
+            padding: 24px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(0, 212, 255, 0.22);
+            background:
+                linear-gradient(135deg, rgba(0, 212, 255, 0.06), rgba(168, 85, 247, 0.05));
+            backdrop-filter: blur(16px);
+        }
+        .callout h3 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        .callout p {
+            color: var(--muted);
+        }
+        .callout strong { color: var(--cyan); }
+
+        /* Footer */
+        footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--line);
+            text-align: center;
+            color: var(--muted);
             font-size: 0.85rem;
-            font-weight: 600;
+        }
+        footer a { color: var(--muted); }
+        footer a:hover { color: var(--cyan); }
+        .footer-mono {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            margin-top: 0.4rem;
+            opacity: 0.7;
         }
 
-        .section-divider {
-            margin-top: 2.5rem;
-            padding-top: 2rem;
-            border-top: 2px solid #e2e8f0;
+        /* Responsive */
+        @media (max-width: 900px) {
+            .tile.s2, .tile.s4, .tile.s6, .tile.s8 { grid-column: span 6; }
+            .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+            nav.floating-header { flex-wrap: wrap; }
+            nav.floating-header .links { width: 100%; justify-content: center; }
         }
-
-        footer { text-align: center; color: white; padding: 1.5rem; opacity: 0.9; font-size: 0.9rem; }
-        footer a { color: white; }
-
-        @media (max-width: 600px) {
-            header h1 { font-size: 2.25rem; }
-            .content { padding: 1.5rem; }
+        @media (max-width: 560px) {
+            .tile { grid-column: span 12 !important; }
+            .kpi-strip { grid-template-columns: 1fr 1fr; }
+            .container { padding: 1rem 1rem 3rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <nav aria-label="Primary">
-            <a href="#features">Features</a>
-            <a href="#docs">Documentation</a>
-            <a href="#getting-started">Getting Started</a>
-            <a href="https://github.com/dayour/Agent-Studio-Kit">GitHub</a>
-            <a href="https://github.com/dayour/Agent-Studio-Kit/releases">Releases</a>
+        <nav class="floating-header" aria-label="Primary">
+            <span class="brand"><span class="brand-dot"></span>Agent Studio Kit</span>
+            <div class="links">
+                <a class="nav-link" href="#features">Features</a>
+                <a class="nav-link" href="#metrics">Capabilities</a>
+                <a class="nav-link" href="#docs">Documentation</a>
+                <a class="nav-link" href="#start">Get Started</a>
+                <a class="nav-link" href="https://github.com/dayour/Agent-Studio-Kit">GitHub</a>
+                <a class="nav-link" href="https://github.com/dayour/Agent-Studio-Kit/releases">Releases</a>
+            </div>
         </nav>
 
-        <header>
-            <h1>Agent Studio Kit</h1>
-            <p>A Comprehensive Toolkit for Microsoft Copilot Studio</p>
-        </header>
-
-        <div class="content">
-            <h2>Welcome to Agent Studio Kit</h2>
-            <p style="margin: 1rem 0; font-size: 1.05rem;">
-                Agent Studio Kit is a powerful set of capabilities designed to augment Microsoft Copilot Studio.
-                The kit empowers makers to develop, govern, and test custom agents with advanced features including
-                AI-powered testing, compliance management, and performance analytics.
+        <header class="hero">
+            <span class="hero-eyebrow">Microsoft Copilot Studio Toolkit</span>
+            <h1>Build, govern, and test<br><span class="gradient">custom agents at scale</span></h1>
+            <p class="lead">
+                A comprehensive set of capabilities that empowers makers with AI-powered testing,
+                compliance management, performance analytics, and prompt engineering for Microsoft Copilot Studio.
             </p>
+            <div class="cta-row">
+                <a href="https://github.com/dayour/Agent-Studio-Kit" class="btn btn-primary">View on GitHub</a>
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/QUICKSTART.md" class="btn btn-success">Quickstart</a>
+                <a href="https://github.com/dayour/Agent-Studio-Kit/releases" class="btn">Releases</a>
+            </div>
 
-            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Technology Stack</h3>
-            <div class="tech-stack">
-                <span class="tech-badge">Microsoft Copilot Studio</span>
+            <div class="tech-stack" style="margin-top: 2rem;">
+                <span class="tech-badge">Copilot Studio</span>
                 <span class="tech-badge">Power Platform</span>
                 <span class="tech-badge">PAC CLI</span>
                 <span class="tech-badge">Dataverse MCP</span>
@@ -178,165 +525,309 @@
                 <span class="tech-badge">Power Automate</span>
                 <span class="tech-badge">Azure OpenAI</span>
             </div>
+        </header>
 
-            <h3 id="features" style="margin-top: 2rem; margin-bottom: 1rem;">Key Features</h3>
-            <div class="features">
-                <div class="feature-card">
-                    <h3>Advanced Testing</h3>
-                    <p>Configure and batch test agents with multiple test types including response match, topic match, multi-turn conversations, and AI-powered generative answer analysis.</p>
+        <section id="metrics" class="section">
+            <div class="section-eyebrow">Capabilities Snapshot</div>
+            <h2>What you get out of the box</h2>
+            <p class="section-sub">Production-grade tooling spanning the full agent lifecycle.</p>
+
+            <div class="kpi-strip">
+                <div class="kpi">
+                    <div class="kpi-label">Test Types</div>
+                    <div class="kpi-value">4</div>
+                    <div class="kpi-sub">response, topic, multi-turn, generative</div>
                 </div>
-                <div class="feature-card">
-                    <h3>Compliance Hub</h3>
-                    <p>Define and enforce governance policies at scale. Automatically evaluate agent configurations and track compliance through an SLA-driven lifecycle.</p>
+                <div class="kpi">
+                    <div class="kpi-label">Feature Modules</div>
+                    <div class="kpi-value">9+</div>
+                    <div class="kpi-sub">testing, compliance, KPIs, advisor</div>
                 </div>
-                <div class="feature-card">
-                    <h3>Conversation KPIs</h3>
-                    <p>Track and analyze agent performance with aggregated data in Dataverse. Understand conversation outcomes without complex transcript analysis.</p>
+                <div class="kpi">
+                    <div class="kpi-label">Documentation</div>
+                    <div class="kpi-value">30+</div>
+                    <div class="kpi-sub">guides covering every workflow</div>
                 </div>
-                <div class="feature-card">
-                    <h3>Prompt Advisor</h3>
-                    <p>Develop effective prompts with AI-powered analysis, confidence evaluation, and suggested refinements implementing various prompt techniques.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Rubrics Refinement</h3>
-                    <p>Create, test, and iteratively improve reusable evaluation standards for AI-generated responses with human-aligned quality standards.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Agent Inventory</h3>
-                    <p>Get tenant-wide visibility of all Copilot Studio agents including features, authentication, knowledge sources, and orchestration details.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>SharePoint Sync</h3>
-                    <p>Configure periodic selective content synchronization from SharePoint locations to agent knowledge bases.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Webchat Playground</h3>
-                    <p>Customize the appearance and behavior of agent webchat including colors, fonts, thumbnails, and generate styled HTML.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Adaptive Cards Gallery</h3>
-                    <p>Access built-in adaptive card templates demonstrating extensibility with dynamic data binding and implementation examples.</p>
+                <div class="kpi">
+                    <div class="kpi-label">Platform</div>
+                    <div class="kpi-value">M365</div>
+                    <div class="kpi-sub">tenant-wide governance</div>
                 </div>
             </div>
+        </section>
 
-            <div class="section-divider" id="docs">
-                <h3 style="margin-bottom: 0.5rem;">Documentation</h3>
-                <p style="color: #6b7280; margin-bottom: 1rem;">Browse the full documentation set, organized by topic.</p>
+        <section id="features" class="section">
+            <div class="section-eyebrow">Feature Tiles</div>
+            <h2>Live capabilities</h2>
+            <p class="section-sub">Bento layout. Click any tile to jump to its documentation.</p>
 
-                <div class="docs-grid">
-                    <div class="doc-group">
-                        <h4>Getting Started</h4>
-                        <ul>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/README.md">Overview (README)</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/QUICKSTART.md">Quickstart</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/PREREQUISITES.md">Prerequisites</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/INSTALLATION_INSTRUCTIONS.md">Installation</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/SETUP_WIZARD.md">Setup Wizard</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/SETUP_USERS_AND_TEAMS.md">Users and Teams</a></li>
-                        </ul>
+            <div class="tile-grid">
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/TESTING_CAPABILITIES.md" class="tile cyan s6">
+                    <div class="tile-header">
+                        <span class="tile-kind">Live Tile</span>
+                        <span class="tile-bd">8W x 8R</span>
                     </div>
-
-                    <div class="doc-group">
-                        <h4>Configuration</h4>
-                        <ul>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONFIGURE_COPILOTS.md">Configure Copilots</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONFIGURE_TESTS.md">Configure Tests</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/SECURITY_ROLES.md">Security Roles</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ENABLE-AUTHENTICATION.md">Enable Authentication</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ENABLE-APPINSIGHTS.md">Enable App Insights</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ALLOW_CONNECTION_POPUP.md">Allow Connection Popup</a></li>
-                        </ul>
+                    <div class="tile-title">Advanced Testing</div>
+                    <div class="tile-desc">
+                        Configure and batch test agents with response match, topic match, multi-turn conversations,
+                        and AI-powered generative answer analysis.
                     </div>
-
-                    <div class="doc-group">
-                        <h4>Testing</h4>
-                        <ul>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/TESTING_CAPABILITIES.md">Testing Capabilities</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AUTOMATED_TESTING.md">Automated Testing</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/RUN_TESTS.md">Run Tests</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ANALYZE_TEST_RESULTS.md">Analyze Test Results</a></li>
-                        </ul>
+                    <div class="tile-foot">
+                        <span class="mono">testing</span>
+                        <span class="tile-link">Open</span>
                     </div>
+                </a>
 
-                    <div class="doc-group">
-                        <h4>Governance</h4>
-                        <ul>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/COMPLIANCE_HUB.md">Compliance Hub</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENT_INVENTORY.md">Agent Inventory</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENT_INVENTORY_DATA_SOURCE.md">Inventory Data Source</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENT_REVIEW_TOOL.md">Agent Review Tool</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENTREVIEWTOOL_REFERENCE_GUIDE.md">Review Tool Reference</a></li>
-                        </ul>
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/COMPLIANCE_HUB.md" class="tile gold s6">
+                    <div class="tile-header">
+                        <span class="tile-kind">Live Tile</span>
+                        <span class="tile-bd">8W x 8R</span>
                     </div>
+                    <div class="tile-title">Compliance Hub</div>
+                    <div class="tile-desc">
+                        Define and enforce governance policies at scale. Automatically evaluate agent configurations
+                        and track compliance through an SLA-driven lifecycle.
+                    </div>
+                    <div class="tile-foot">
+                        <span class="mono">governance</span>
+                        <span class="tile-link">Open</span>
+                    </div>
+                </a>
 
-                    <div class="doc-group">
-                        <h4>Authoring</h4>
-                        <ul>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/PROMPT_ADVISOR.md">Prompt Advisor</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/RubricRefinement/01-rubrics-refinement-overview.md">Rubrics Refinement</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ADAPTIVE_CARDS_GALLERY.md">Adaptive Cards Gallery</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/WEBCHAT_PLAYGROUND.md">Webchat Playground</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/FILE_SYNCHRONIZATION.md">File Synchronization</a></li>
-                        </ul>
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONVERSATION_KPIS.md" class="tile blue s4">
+                    <div class="tile-header">
+                        <span class="tile-kind">Live Tile</span>
+                        <span class="tile-bd">4W x 6R</span>
                     </div>
+                    <div class="tile-title">Conversation KPIs</div>
+                    <div class="tile-desc">
+                        Track agent performance with aggregated Dataverse data. Understand outcomes without complex transcript analysis.
+                    </div>
+                    <div class="tile-foot">
+                        <span class="mono">analytics</span>
+                        <span class="tile-link">Open</span>
+                    </div>
+                </a>
 
-                    <div class="doc-group">
-                        <h4>Analytics</h4>
-                        <ul>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONVERSATION_KPIS.md">Conversation KPIs</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONVERSATION_ANALYZER.md">Conversation Analyzer</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENT_VALUE_SUMMARY_DASHBOARD.md">Value Summary Dashboard</a></li>
-                        </ul>
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/PROMPT_ADVISOR.md" class="tile violet s4">
+                    <div class="tile-header">
+                        <span class="tile-kind">Live Tile</span>
+                        <span class="tile-bd">4W x 6R</span>
                     </div>
+                    <div class="tile-title">Prompt Advisor</div>
+                    <div class="tile-desc">
+                        AI-powered prompt analysis with confidence evaluation and refinement suggestions implementing proven techniques.
+                    </div>
+                    <div class="tile-foot">
+                        <span class="mono">authoring</span>
+                        <span class="tile-link">Open</span>
+                    </div>
+                </a>
 
-                    <div class="doc-group">
-                        <h4>Reference</h4>
-                        <ul>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ARCHITECTURE.md">Architecture</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/TECHDETAILS.md">Technical Details</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/PACKAGES.md">Packages</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/RELEASE_NOTES.md">Release Notes</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/MICROSOFTAUTHENTICATION.md">Microsoft Authentication</a></li>
-                        </ul>
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/RubricRefinement/01-rubrics-refinement-overview.md" class="tile green s4">
+                    <div class="tile-header">
+                        <span class="tile-kind">Live Tile</span>
+                        <span class="tile-bd">4W x 6R</span>
                     </div>
+                    <div class="tile-title">Rubrics Refinement</div>
+                    <div class="tile-desc">
+                        Create, test, and iteratively improve reusable evaluation standards aligned to human quality judgment.
+                    </div>
+                    <div class="tile-foot">
+                        <span class="mono">evaluation</span>
+                        <span class="tile-link">Open</span>
+                    </div>
+                </a>
 
-                    <div class="doc-group">
-                        <h4>Support</h4>
-                        <ul>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/TROUBLESHOOT.md">Troubleshoot</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/SUPPORT.md">Support</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/OFFICEHOURS.md">Office Hours</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONTRIBUTING.md">Contributing</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a></li>
-                            <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/SECURITY.md">Security</a></li>
-                        </ul>
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENT_INVENTORY.md" class="tile pink s6">
+                    <div class="tile-header">
+                        <span class="tile-kind">Live Tile</span>
+                        <span class="tile-bd">8W x 6R</span>
                     </div>
+                    <div class="tile-title">Agent Inventory</div>
+                    <div class="tile-desc">
+                        Tenant-wide visibility of all Copilot Studio agents, their features, authentication settings,
+                        knowledge sources, and orchestration details.
+                    </div>
+                    <div class="tile-foot">
+                        <span class="mono">discovery</span>
+                        <span class="tile-link">Open</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/FILE_SYNCHRONIZATION.md" class="tile teal s6">
+                    <div class="tile-header">
+                        <span class="tile-kind">Live Tile</span>
+                        <span class="tile-bd">8W x 6R</span>
+                    </div>
+                    <div class="tile-title">SharePoint Sync</div>
+                    <div class="tile-desc">
+                        Configure periodic, selective content synchronization from SharePoint locations directly into agent knowledge bases.
+                    </div>
+                    <div class="tile-foot">
+                        <span class="mono">knowledge</span>
+                        <span class="tile-link">Open</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/WEBCHAT_PLAYGROUND.md" class="tile cyan s4">
+                    <div class="tile-header">
+                        <span class="tile-kind">Live Tile</span>
+                        <span class="tile-bd">4W x 6R</span>
+                    </div>
+                    <div class="tile-title">Webchat Playground</div>
+                    <div class="tile-desc">
+                        Customize webchat appearance: colors, fonts, thumbnails. Generate styled HTML embeds.
+                    </div>
+                    <div class="tile-foot">
+                        <span class="mono">ux</span>
+                        <span class="tile-link">Open</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ADAPTIVE_CARDS_GALLERY.md" class="tile gold s4">
+                    <div class="tile-header">
+                        <span class="tile-kind">Live Tile</span>
+                        <span class="tile-bd">4W x 6R</span>
+                    </div>
+                    <div class="tile-title">Adaptive Cards</div>
+                    <div class="tile-desc">
+                        Built-in templates demonstrating extensibility with dynamic data binding and implementation examples.
+                    </div>
+                    <div class="tile-foot">
+                        <span class="mono">cards</span>
+                        <span class="tile-link">Open</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENT_REVIEW_TOOL.md" class="tile red s4">
+                    <div class="tile-header">
+                        <span class="tile-kind">Live Tile</span>
+                        <span class="tile-bd">4W x 6R</span>
+                    </div>
+                    <div class="tile-title">Agent Review</div>
+                    <div class="tile-desc">
+                        Solution analysis tool for reviewing agents to surface anti-patterns and configuration issues.
+                    </div>
+                    <div class="tile-foot">
+                        <span class="mono">quality</span>
+                        <span class="tile-link">Open</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section id="docs" class="section">
+            <div class="section-eyebrow">Documentation Index</div>
+            <h2>Browse all guides</h2>
+            <p class="section-sub">Every workflow, fully documented. Grouped by topic.</p>
+
+            <div class="docs-grid">
+                <div class="doc-panel">
+                    <h4>Getting Started</h4>
+                    <ul>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/README.md">Overview (README)</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/QUICKSTART.md">Quickstart</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/PREREQUISITES.md">Prerequisites</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/INSTALLATION_INSTRUCTIONS.md">Installation</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/SETUP_WIZARD.md">Setup Wizard</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/SETUP_USERS_AND_TEAMS.md">Users and Teams</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-panel">
+                    <h4>Configuration</h4>
+                    <ul>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONFIGURE_COPILOTS.md">Configure Copilots</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONFIGURE_TESTS.md">Configure Tests</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/SECURITY_ROLES.md">Security Roles</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ENABLE-AUTHENTICATION.md">Enable Authentication</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ENABLE-APPINSIGHTS.md">Enable App Insights</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ALLOW_CONNECTION_POPUP.md">Allow Connection Popup</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-panel">
+                    <h4>Testing</h4>
+                    <ul>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/TESTING_CAPABILITIES.md">Testing Capabilities</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AUTOMATED_TESTING.md">Automated Testing</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/RUN_TESTS.md">Run Tests</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ANALYZE_TEST_RESULTS.md">Analyze Test Results</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-panel">
+                    <h4>Governance</h4>
+                    <ul>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/COMPLIANCE_HUB.md">Compliance Hub</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENT_INVENTORY.md">Agent Inventory</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENT_INVENTORY_DATA_SOURCE.md">Inventory Data Source</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENT_REVIEW_TOOL.md">Agent Review Tool</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENTREVIEWTOOL_REFERENCE_GUIDE.md">Review Tool Reference</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-panel">
+                    <h4>Authoring</h4>
+                    <ul>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/PROMPT_ADVISOR.md">Prompt Advisor</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/RubricRefinement/01-rubrics-refinement-overview.md">Rubrics Refinement</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ADAPTIVE_CARDS_GALLERY.md">Adaptive Cards Gallery</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/WEBCHAT_PLAYGROUND.md">Webchat Playground</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/FILE_SYNCHRONIZATION.md">File Synchronization</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-panel">
+                    <h4>Analytics</h4>
+                    <ul>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONVERSATION_KPIS.md">Conversation KPIs</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONVERSATION_ANALYZER.md">Conversation Analyzer</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/AGENT_VALUE_SUMMARY_DASHBOARD.md">Value Summary Dashboard</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-panel">
+                    <h4>Reference</h4>
+                    <ul>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/ARCHITECTURE.md">Architecture</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/TECHDETAILS.md">Technical Details</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/PACKAGES.md">Packages</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/RELEASE_NOTES.md">Release Notes</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/MICROSOFTAUTHENTICATION.md">Microsoft Authentication</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-panel">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/TROUBLESHOOT.md">Troubleshoot</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/SUPPORT.md">Support</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/OFFICEHOURS.md">Office Hours</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CONTRIBUTING.md">Contributing</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a></li>
+                        <li><a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/SECURITY.md">Security</a></li>
+                    </ul>
                 </div>
             </div>
+        </section>
 
-            <div class="cta" id="getting-started">
-                <h3 style="margin-bottom: 1rem;">Get Started</h3>
-                <a href="https://github.com/dayour/Agent-Studio-Kit" class="btn">View on GitHub</a>
-                <a href="https://github.com/dayour/Agent-Studio-Kit/blob/main/QUICKSTART.md" class="btn btn-secondary">Quickstart Guide</a>
-                <a href="https://github.com/dayour/Agent-Studio-Kit/releases" class="btn btn-tertiary">Releases</a>
-            </div>
-
-            <div class="section-divider">
-                <h3 style="margin-bottom: 1rem;">Power Platform Integration</h3>
-                <p>
-                    Agent Studio Kit seamlessly integrates with the Microsoft Power Platform ecosystem.
-                    Use the <strong>PAC CLI</strong> (Power Platform CLI) to manage deployments, and leverage
-                    <strong>Dataverse MCP</strong> (Model Context Protocol) for advanced data operations and agent management.
-                    The kit supports automated testing through Power Platform Pipelines, ensuring quality gates
-                    in your deployment lifecycle.
-                </p>
-            </div>
-        </div>
+        <section id="start" class="callout">
+            <h3>Power Platform Integration</h3>
+            <p>
+                Agent Studio Kit seamlessly integrates with the Microsoft Power Platform ecosystem.
+                Use the <strong>PAC CLI</strong> (Power Platform CLI) to manage deployments, and leverage
+                <strong>Dataverse MCP</strong> (Model Context Protocol) for advanced data operations and agent management.
+                The kit supports automated testing through Power Platform Pipelines, ensuring quality gates in your deployment lifecycle.
+            </p>
+        </section>
 
         <footer>
             <p>&copy; 2026 Agent Studio Kit. Built for Microsoft Copilot Studio.</p>
-            <p style="margin-top: 0.5rem;">
-                Fork of <a href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit">Power CAT Copilot Studio Kit</a>.
+            <p class="footer-mono">
+                Fork of <a href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit">Power CAT Copilot Studio Kit</a>
+                &middot; <a href="https://github.com/dayour/Agent-Studio-Kit">github.com/dayour/Agent-Studio-Kit</a>
             </p>
         </footer>
     </div>
