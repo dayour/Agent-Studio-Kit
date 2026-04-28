@@ -47,6 +47,24 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+*.local.*
+
+# Secrets and credentials
+*.pem
+*.key
+*.pfx
+*.p12
+*.cer
+*.crt
+secrets.json
+secrets.*.json
+credentials*
+appsettings.*.json
+!appsettings.json
+!appsettings.Example.json
+
+# Copilot CLI session state
+.copilot/
 
 # Logs
 *.log
