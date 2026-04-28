@@ -554,7 +554,7 @@
             content: "Schema";
             position: absolute;
             right: 12px;
-            bottom: 10px;
+            top: 10px;
             border: 1px solid rgba(0, 212, 255, 0.24);
             border-radius: 999px;
             background: rgba(3, 5, 18, 0.82);
@@ -568,6 +568,13 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 120ms ease;
+        }
+        .moduleTile-flip .tile-header {
+            justify-content: flex-start;
+            padding-right: 82px;
+        }
+        .moduleTile-flip .tile-bd {
+            margin-left: 8px;
         }
         .flip-card:hover .flip-front::after,
         .flip-card:focus-visible .flip-front::after {
