@@ -1,8 +1,8 @@
-# Agent Inventory (Preview)
+# Agent Inventory
 
 ## Agent Inventory overview
 
-Copilot Studio Kit Agent Inventory feature can be used to easily get a tenant-wide visibility to all the Copilot Studio custom agents in the organization, across environments. Agent inventory data includes basic metadata like creation times, publish status and authentication mode, as well as information on the feature usage like knowledge sources used, usage of prompts, orchestration type and more.
+Copilot Studio Kit Agent Inventory feature can be used to easily get a tenant-wide visibility to all the **custom agents** and **declarative agents** in the organization, across environments. Agent inventory data includes basic metadata like creation times, publish status and authentication mode, as well as information on the feature usage like knowledge sources used, usage of prompts, orchestration type and more.
 
 ## Dashboard
 
@@ -20,6 +20,8 @@ Selecting an agent and pressing *View details* brings up a detailed view of the 
 the environment, creation time and creator, and detailed information the usage of different features such as actions, generative AI, skills, prompts,
 knowledge sources and more.
 
+> **Disclaimer:** The usage percentages shown here depend on the environments for which the user has System Administrator access.
+
 ![Copilot Studio Kit - Agent Details](https://github.com/user-attachments/assets/5e4e4344-2b0b-4ee6-91d9-7bc87f047fbe)
 
 
@@ -30,7 +32,7 @@ And finally, pressing *Show more* from the dashboard view, brings up a list view
 ![agent inventory list view](https://github.com/user-attachments/assets/2e10abe5-e13e-4aae-a18b-ca6eb6c14469)
 
 ## Using Usage Metrics in Agent Inventory 
-You can view usage details for your agent over the past 30 days in **Agent Inventory**. Agent Usage Metrics is distributed as an optional separate solution due to its connector requirements.
+You can view usage details for your agent over the past 180 days in **Agent Inventory**. Agent Usage Metrics is distributed as an optional separate solution due to its connector requirements.
 
 ### Prerequisites 
 
@@ -41,7 +43,7 @@ Before using the usage metrics feature:
 
 ### Installation Instructions 
 
-To enable usage metrics on top of the Copilot Studio Kit main solution, you must **import the `AgentInventoryUsage` solution**, available in the **September release Assets directory**.
+To enable usage metrics on top of the Copilot Studio Kit main solution, you must **import the `AgentInventoryUsage` solution**, available in the **Latest release Assets directory**.
 
 During the import process, create a connection using the licensing host URL: https://licensing.powerplatform.microsoft.com/
 
@@ -63,6 +65,31 @@ If the **Total Usage/Month** field contains a value, the **Usage Metrics** secti
 
 
 > [!NOTE]
-> It is important to understand that the visibility to the agents is *limited* and *controlled* by the connection references in the solution. **Copilot Studio Kit - Power Platform for Admins** is used to fetch the list of environments in the tenant and **Copilot Studio Kit - Dataverse** is used to gather the agent information from the environments. For full visibility, the connection references have to be configured with account having Power Platform admin role and system admin level permission to all the environments. Other accounts can be used as well, but the visibility of the agent inventory is limited to the environments the user has system admin access to.
+> The visibility to agents is *limited* and *controlled* by the connection references in the solution. 
+
+## Data Collection Modes
+
+The data collection process is controlled by the **Enable One Inventory** environment variable, which determines how agent data is retrieved and loaded into Agent Inventory.
+
+### Enable One Inventory = "Yes" (One Inventory mode)
+
+When **Enable One Inventory** is set to **Yes**, the process uses One Inventory data:
+
+1. Agent data is retrieved from One Inventory through the Power Platform Admin Center.
+2. Environments are listed using the **Copilot Studio Kit - Power Platform for Admins V2** connector.
+3. The One Inventory agent data is combined with the environments list to construct environment details.
+4. For each environment, agent details are loaded into Agent Inventory by merging agents fetched from the environment with the corresponding One Inventory data.
+
+### Enable One Inventory = "No" (Standard mode)
+
+When **Enable One Inventory** is set to **No**, the process follows the standard data collection approach:
+
+1. All environments are listed using the **Copilot Studio Kit - Power Platform for Admins V1** connector.
+2. Agents are fetched for each environment.
+3. Agent data is loaded into Agent Inventory.
+
+In both modes, the **Copilot Studio Kit - Dataverse** connector connects to each environment to gather detailed agent information (metadata, feature usage, configuration) — but only where the configured account has **system admin access**.
+
+For full tenant-wide visibility, the connection references must be configured with an account that has the **Power Platform admin role** and to view all the features need to have **system admin level permission** to all environments. Other accounts can be used, but the inventory will be limited to the environments the user has system admin access to.
 
 Back to the [landing page](./README.md#power-cat-copilot-studio-kit)

@@ -98,15 +98,36 @@ Administrators can configure thresholds, risk levels, SLA timers and enforcement
 
 More information on [Compliance Hub](./COMPLIANCE_HUB.md) 
 
-## Rubrics refinement *(New!)*
+## Agent Insights Hub (Preview)
+Agent Insights Hub is a comprehensive analytics and monitoring dashboard for Microsoft Copilot Studio agents. It aggregates telemetry from Azure Application Insights, and Conversation Transcripts to provide visibility into agent performance, conversation metrics, topic and tool analytics, error tracking, and credit consumption — all from a single unified interface. The dashboard includes KPI cards with trend indicators, time-series charts, transcript analysis with CSAT scores, and flexible filtering by agent, date range, channel, and data mode. It supports on-demand syncs up to 365 days of historical data, scheduled daily syncs, and Excel export for offline reporting.
+
+More information on [Agent Insights Hub](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/AGENT_INSIGHTS_HUB.md)
+
+## Agent Debugger
+
+**Agent Debugger** is a diagnostic tool inside the **Copilot Studio Kit Admin** app that lets administrators load any recorded conversation and inspect every decision the agent made — step by step, with timing, token usage, knowledge sources, arguments, and observations — without leaving the Power Platform.
+
+More information on [Agent Debugger](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/AGENT_DEBUGGER.md)
+
+## Agent Library (Preview)
+The Agent Library is a centralized hub within the Copilot Studio Kit that helps makers discover, install, and manage pre-built agent templates and reusable components. Instead of building agents from scratch, you can browse a curated catalog of ready-to-use templates (Custom Agent and Declarative Agent) and components, install them directly into your environment, and customize them to fit your business needs.
+
+More information on [Agent Library](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/AGENT_LIBRARY.md)
+
+## Component Library (Preview)
+The Component Library is a collection of ready-to-use, pre-built components for Microsoft Copilot Studio — packaged as component collections so you can import only the ones you need. The new app lets you easily browse and add the component to your environment. Add the component to your agent like you would with any component collection. Use agent instructions to control when and how each component is invoked — no custom development required.
+
+More information on [Component Library](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/COMPONENT_LIBRARY.md)
+
+## Rubrics refinement
 Rubrics Refinement is a powerful capability in Copilot Studio Kit that enables you to create, test, and iteratively improve reusable evaluation standards (rubrics) for AI-generated responses. This feature helps ensure that AI grading of your agent's responses aligns with human judgment and organizational quality standards.
 
 More information on [Rubrics Refinement](./RubricRefinement/01-rubrics-refinement-overview.md) 
 
-## Conversation KPIs
-Conversation KPIs are designed to help makers track and analyze the performance of their custom agents. This feature complements the existing analytics built-in the Copilot Studio and simplifies the process of understanding conversation outcomes by providing aggregated data in Dataverse rather than requiring you to analyze the complex conversation transcripts. 
+## Conversation KPI
+Conversation KPI are designed to help makers track and analyze the performance of their custom agents. This feature complements the existing analytics built-in the Copilot Studio and simplifies the process of understanding conversation outcomes by providing aggregated data in Dataverse rather than requiring you to analyze the complex conversation transcripts. 
 
-More information on [conversation KPIs](./CONVERSATION_KPIS.md)
+More information on [conversation KPI](./CONVERSATION_KPI.md)
 
 ## SharePoint synchronization
 SharePoint synchronization allows makers to configure periodical selective content synchronization from SharePoint locations to custom agent knowledge base as files.
@@ -137,6 +158,13 @@ More information on [Agent Inventory](./AGENT_INVENTORY.md)
 Agent Review Tool is a solution analysis tool that can be used to review your agents for any potential issues or anti-patterns that might have negative impact on the performance or the security of your agent. After analyzing the solution, Agent Review Tool presents the findings in easy to interpret format, with severity and details on how to address the issue.
 
 More information on [Agent Review Tool](./AGENT_REVIEW_TOOL.md)
+
+## PowerShield
+PowerShield enables organizations using the Power Platform to manage connector access through a structured, approval-based workflow for Data Loss Prevention (DLP) policies. It provides a self-service experience for makers to request connector access via a guided 5-step wizard, and a review interface for administrators to approve, reject, or manage those requests. Every DLP policy change is traceable to a PowerShield request, ensuring governance compliance and auditability.
+
+Administrators can configure blocked connectors, compliance questionnaires, and notification settings, while makers create requests scoped to Service Trees and Environment Containers. PowerShield automatically handles DLP policy creation, conflict resolution with existing policies, and per-environment fulfillment tracking.
+
+More information on [PowerShield](./POWER_SHIELD.md)
 
 ## Conversation Analyzer
 Conversation Analyzer allows makers to analyze the conversations of their custom agents using custom prompts to get additional insights.

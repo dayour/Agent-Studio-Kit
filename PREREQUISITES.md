@@ -23,10 +23,13 @@ The Power CAT Copilot Studio Kit is built using Power Platform and requires adeq
 * Copilot Studio Kit is using advanced components from the Creator Kit, please make sure to deploy it before deploying Copilot Studio Kit
   * [Creator Kit installation instructions](https://learn.microsoft.com/power-platform/guidance/creator-kit/setup)
 
+* This solution requires Code Apps to be enabled on the environment.
+  * [Enabling code apps on a Power Platform environment](https://learn.microsoft.com/en-us/power-apps/developer/code-apps/overview#enable-code-apps-on-a-power-platform-environment)
+
 ## Optional requirements
 
 - **AI Builder / Copilot credits**.
-  AI Builder prompts are used with the *Test Automation*, *Rubric Refinement*, *Conversation Analyzer* and *Prompt Advisor* features of the Kit. These features have Power Automate flows using AI Builder capabilities, which have specific requirements. 
+  AI Builder prompts are used with the *Test Automation*, *Rubric Refinement*, *Conversation Analyzer*, *Agent Review Tool*, *Agent Value Summary*, and *Prompt Advisor* features of the Kit. These features have Power Automate flows using AI Builder capabilities, which have specific requirements.
 
 AI Builder capabilities consume Copilot Credits (and first AI Builder credits if any).
 
